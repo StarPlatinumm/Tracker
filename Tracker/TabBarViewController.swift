@@ -7,7 +7,7 @@ class TabBarViewController: UITabBarController {
         view.backgroundColor = .ypWhite
         
         // вкладка Трекеры
-        let trackerViewController = TrackersViewController()
+        let trackerViewController = UINavigationController(rootViewController: TrackersViewController())
         trackerViewController.tabBarItem = UITabBarItem(
             title: "Трекеры",
             image: UIImage(named: "trackers-tab-bar-icon"),

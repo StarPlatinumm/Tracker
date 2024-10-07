@@ -8,47 +8,6 @@ class TrackersViewController: UIViewController {
         return formatter
     }()
     
-    private var plusButton: UIButton  = {
-        let button = UIButton(type: .custom)
-        button.setImage(UIImage(named: "add-tracker-button"), for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    private var currentDateLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        label.textColor = .black
-        label.textAlignment = .center
-        label.backgroundColor = .ypLightGray
-        label.layer.cornerRadius = 8
-        label.layer.masksToBounds = true
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private var roundedRectangleView: UIView = {
-        let view = UIView(frame: CGRect(x: 50, y: 50, width: 200, height: 100))
-        view.backgroundColor = .ypLightGray
-        view.layer.cornerRadius = 8
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private var headerLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
-        label.textColor = .ypBlack
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private var searchBar: UISearchBar = {
-        let searchBar = UISearchBar()
-        searchBar.searchBarStyle = .minimal
-        searchBar.translatesAutoresizingMaskIntoConstraints = false
-        return searchBar
-    }()
     
     private var emptyTrackersImageView: UIImageView = {
         let imageView = UIImageView()
@@ -66,52 +25,33 @@ class TrackersViewController: UIViewController {
         return label
     }()
     
-    
+    var categories: [TrackerCategory] = []
+    var completedTrackers: [TrackerRecord] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        addPlusButton()
-        addCurrentDateLabel()
-        addHeaderLabel()
-        addSearchBar()
-        addEmptyTrackersImageView()
-        addEmptyTrackersTextLabel()
+
+        let datePicker = UIDatePicker()
+        datePicker.datePickerMode = .date
+        datePicker.preferredDatePickerStyle = .compact
+        datePicker.locale = Locale(identifier: "ru_RU")
         
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
+        addButton.tintColor = UIColor.ypBlack
+        
+        navigationItem.title = "Трекеры"
+        navigationItem.largeTitleDisplayMode = .always
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.leftBarButtonItem = addButton
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
+        navigationItem.searchController = UISearchController(searchResultsController: nil)
     }
     
-    private func addPlusButton() {
-        view.addSubview(plusButton)
-        plusButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 4).isActive = true
-        plusButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        plusButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
-        plusButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
+    @objc func addTapped() {
+        present(UINavigationController(rootViewController: ChooseCreateTrackerViewController()), animated: true, completion: nil)
     }
     
-    private func addCurrentDateLabel() {
-        view.addSubview(currentDateLabel)
-        currentDateLabel.text = dateFormatter.string(from: Date())
-        currentDateLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
-        currentDateLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 5).isActive = true
-        currentDateLabel.widthAnchor.constraint(equalToConstant: 77).isActive = true
-        currentDateLabel.heightAnchor.constraint(equalToConstant: 34).isActive = true
-    }
-    
-    private func addHeaderLabel() {
-        view.addSubview(headerLabel)
-        headerLabel.text = "Трекеры"
-        headerLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-        headerLabel.topAnchor.constraint(equalTo: plusButton.bottomAnchor).isActive = true
-    }
-    
-    private func addSearchBar() {
-        view.addSubview(searchBar)
-        searchBar.placeholder = "Поиск"
-        searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 8).isActive = true
-        searchBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -8).isActive = true
-        searchBar.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 7).isActive = true
-        searchBar.heightAnchor.constraint(equalToConstant: 36).isActive = true
-    }
     
     private func addEmptyTrackersImageView() {
         view.addSubview(emptyTrackersImageView)
@@ -128,7 +68,4 @@ class TrackersViewController: UIViewController {
         emptyTrackersTextLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         emptyTrackersTextLabel.topAnchor.constraint(equalTo: emptyTrackersImageView.bottomAnchor, constant: 8).isActive = true
     }
-    
-    
-    
 }

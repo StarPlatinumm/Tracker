@@ -80,6 +80,28 @@ final class CreateTrackerViewController: UIViewController {
         return collection
     }()
     
+    private let createButtonView: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("Создать", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 16
+        button.backgroundColor = .ypBlack
+        button.isEnabled = false
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private let cancelButtonView: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("Отменить", for: .normal)
+        button.setTitleColor(.ypRed, for: .normal)
+        button.layer.cornerRadius = 16
+        button.layer.borderWidth = 1.0
+        button.layer.borderColor = UIColor.ypRed.cgColor
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -111,6 +133,12 @@ final class CreateTrackerViewController: UIViewController {
         colorCollection.delegate = self.colorCollectionViewController
         mainStackView.addArrangedSubview(colorCollection)
         
+        // кнопки снизу
+        let buttonsStackView = UIStackView(arrangedSubviews: [cancelButtonView, createButtonView])
+        buttonsStackView.axis = .horizontal
+        buttonsStackView.spacing = 8
+        buttonsStackView.distribution = .fillEqually
+        mainStackView.addArrangedSubview(buttonsStackView)
         
         scrollView.addSubview(mainStackView) // добавляем на экран скролл вью
         view.addSubview(scrollView)          // в скролл вью добавляем стек со всеми элементами
@@ -129,8 +157,9 @@ final class CreateTrackerViewController: UIViewController {
             
             nameTextField.heightAnchor.constraint(equalToConstant: 75),
             optionsTableViewController.view.heightAnchor.constraint(equalToConstant: 160),
-            emojiCollection.heightAnchor.constraint(equalToConstant: 250),
-            colorCollection.heightAnchor.constraint(equalToConstant: 250),
+            emojiCollection.heightAnchor.constraint(equalToConstant: 240),
+            colorCollection.heightAnchor.constraint(equalToConstant: 240),
+            buttonsStackView.heightAnchor.constraint(equalToConstant: 60),
         ])
     }
     

@@ -42,10 +42,10 @@ final class ChooseCreateTrackerViewController: UIViewController {
     }
     
     @objc private func opencCreateTrackerWithSchedule() {
-        navigationController?.pushViewController(CreateTrackerViewController(hasSchedule: true), animated: true)
+        navigationController?.pushViewController(CreateTrackerViewController(isRegular: true), animated: true)
     }
     
     @objc private func opencCreateTrackerWOSchedule() {
-        navigationController?.pushViewController(CreateTrackerViewController(hasSchedule: false), animated: true)
+        navigationController?.pushViewController(CreateTrackerViewController(isRegular: false), animated: true)
     }
 }

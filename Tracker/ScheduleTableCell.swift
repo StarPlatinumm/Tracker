@@ -1,9 +1,9 @@
 import UIKit
 
-class CustomTableCell: UITableViewCell {
+class ScheduleTableCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         backgroundColor = .ypLightGray
         
@@ -12,11 +12,8 @@ class CustomTableCell: UITableViewCell {
         
         translatesAutoresizingMaskIntoConstraints = false
         
-        accessoryType = .disclosureIndicator
         separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         selectionStyle = .none
-        
-        detailTextLabel?.textColor = .ypGray
     }
     
     required init?(coder: NSCoder) {
@@ -26,22 +23,17 @@ class CustomTableCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        // Скругляем углы ячейкам в зависимости от их позиции в таблице
+        // Round corners based on position in the table
         if let indexPath = (superview as? UITableView)?.indexPath(for: self) {
-            if (superview as! UITableView).numberOfRows(inSection: indexPath.section) == 1 {
-                // если строчка только одна (скругляем полностью)
-                layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-                separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: CGFloat.greatestFiniteMagnitude)
-            }
             if indexPath.row == 0 {
-                // первая строчка (скругляем сверху)
+                // First cell
                 layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             } else if indexPath.row == (superview as! UITableView).numberOfRows(inSection: indexPath.section) - 1 {
-                // последняя строчка (скругляем снизу)
+                // Last cell
                 layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
                 separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: CGFloat.greatestFiniteMagnitude)
             } else {
-                // строчки в середине
+                // Middle cells
                 layer.maskedCorners = []
             }
         }

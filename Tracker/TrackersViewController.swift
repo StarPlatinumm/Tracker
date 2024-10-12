@@ -2,11 +2,6 @@ import UIKit
 
 class TrackersViewController: UIViewController {
     
-    //    private lazy var dateFormatter: DateFormatter = {
-    //        let formatter = DateFormatter()
-    //        formatter.dateFormat = "d.MM.yy"
-    //        return formatter
-    //    }()
     private lazy var addButton: UIBarButtonItem = {
         let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
         button.tintColor = UIColor.ypBlack
@@ -25,8 +20,15 @@ class TrackersViewController: UIViewController {
     private lazy var scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.translatesAutoresizingMaskIntoConstraints = false
-        scroll.backgroundColor = .green
         return scroll
+    }()
+    
+    private lazy var mainStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 24
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
     
     private lazy var trackersCollection: UICollectionView = {
@@ -36,7 +38,6 @@ class TrackersViewController: UIViewController {
         collection.translatesAutoresizingMaskIntoConstraints = false
         collection.dataSource = self
         collection.delegate = self
-        collection.backgroundColor = .brown
         return collection
     }()
     
@@ -97,7 +98,8 @@ class TrackersViewController: UIViewController {
                 emptyTrackersTextLabel.topAnchor.constraint(equalTo: emptyTrackersImageView.bottomAnchor, constant: 8),
             ])
         } else {
-            scrollView.addSubview(trackersCollection)
+            mainStackView.addArrangedSubview(trackersCollection)
+            scrollView.addSubview(mainStackView)
             view.addSubview(scrollView)
             
             NSLayoutConstraint.activate([
@@ -106,11 +108,13 @@ class TrackersViewController: UIViewController {
                 scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
                 scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
                 
-                trackersCollection.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-                trackersCollection.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-                trackersCollection.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-                trackersCollection.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-                trackersCollection.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
+                mainStackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+                mainStackView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+                mainStackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+                mainStackView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+                mainStackView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
+                
+                trackersCollection.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor),
             ])
         }
     }
@@ -140,7 +144,7 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TrackerCell", for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerCollectionCell.identifier, for: indexPath)
         cell.backgroundColor = .orange
         return cell
     }
@@ -165,8 +169,6 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let availableWidth = collectionView.frame.width - params.paddingWidth
         let cellWidth =  availableWidth / CGFloat(params.cellCount)
-        print("availableWidth: ", availableWidth)
-        print("cellWidth: ", cellWidth)
         return CGSize(width: cellWidth, height: cellWidth)
     }
     

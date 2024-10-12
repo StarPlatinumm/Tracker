@@ -12,7 +12,7 @@ class SupplementaryView: UICollectionReusableView {
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
             titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
     }

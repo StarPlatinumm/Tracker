@@ -92,13 +92,7 @@ class TrackerCollectionCell: UICollectionViewCell {
     }
 
     @objc private func onAddButtonTapped(_ button: UIButton) {
-        if button.isSelected {
-            button.isSelected = false
-            self.onUpdateTrackersDoneStatus?(UInt(button.tag), false)
-        } else {
-            button.isSelected = true
-            self.onUpdateTrackersDoneStatus?(UInt(button.tag), true)
-        }
+        button.isSelected.toggle()
+        self.onUpdateTrackersDoneStatus?(UInt(button.tag), button.isSelected)
     }
-
 }

@@ -9,19 +9,6 @@ struct Tracker {
     let schedule: [Weekday]
 }
 
-// Структура для хранения категорий трекеров
-struct TrackerCategory {
-    let title: String
-    let trackers: [Tracker]
-}
-
-// Структура для хранения записи о выполнении трекера на определенную дату
-struct TrackerRecord {
-    let trackerID: UInt
-    let date: Date
-}
-
-// Дни недели
 enum Weekday: String {
     case monday = "Понедельник"
     case tuesday = "Вторник"
@@ -31,3 +18,8 @@ enum Weekday: String {
     case saturday = "Суббота"
     case sunday = "Воскресенье"
 }
+
+
+
+
+

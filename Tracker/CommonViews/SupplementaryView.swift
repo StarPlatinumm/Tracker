@@ -1,5 +1,6 @@
 import UIKit
 
+// для отображаения названий разделов в коллекциях
 final class SupplementaryView: UICollectionReusableView {
     let titleLabel = UILabel()
     

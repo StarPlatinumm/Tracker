@@ -1,26 +1,27 @@
 import UIKit
 
-var testCategories: [TrackerCategory] = [
-    TrackerCategory(title: "Домашний уют", trackers: [
-        Tracker(id: "0", name: "Поливать растения", color: .ypColorSelection18, emoji: "🪴", schedule: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday])
-    ]),
-    TrackerCategory(title: "Радостные мелочи", trackers: [
-        Tracker(id: "1", name: "Кошка заслонила камеру на созвоне", color: .ypColorSelection2, emoji: "🐈", schedule: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]),
-        Tracker(id: "2", name: "Бабушка прислала открытку в вотсапе", color: .ypColorSelection6, emoji: "🌺", schedule: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]),
-        Tracker(id: "3", name: "Свидания в апреле", color: .ypColorSelection15, emoji: "🍆", schedule: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday])
-    ]),
-    TrackerCategory(title: "Самочувствие", trackers: [
-        Tracker(id: "4", name: "Хорошее настроение", color: .ypColorSelection14, emoji: "🙂", schedule: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]),
-        Tracker(id: "5", name: "Тревожность", color: .ypColorSelection1, emoji: "😱", schedule: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday])
-    ]),
-]
+//var testCategories: [TrackerCategory] = [
+//    TrackerCategory(title: "Домашний уют", trackers: [
+//        Tracker(id: "0", name: "Поливать растения", color: .ypColorSelection18, emoji: "🪴", schedule: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday])
+//    ]),
+//    TrackerCategory(title: "Радостные мелочи", trackers: [
+//        Tracker(id: "1", name: "Кошка заслонила камеру на созвоне", color: .ypColorSelection2, emoji: "🐈", schedule: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]),
+//        Tracker(id: "2", name: "Бабушка прислала открытку в вотсапе", color: .ypColorSelection6, emoji: "🌺", schedule: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]),
+//        Tracker(id: "3", name: "Свидания в апреле", color: .ypColorSelection15, emoji: "🍆", schedule: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday])
+//    ]),
+//    TrackerCategory(title: "Самочувствие", trackers: [
+//        Tracker(id: "4", name: "Хорошее настроение", color: .ypColorSelection14, emoji: "🙂", schedule: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]),
+//        Tracker(id: "5", name: "Тревожность", color: .ypColorSelection1, emoji: "😱", schedule: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday])
+//    ]),
+//]
+//
+//var testCompletedTrackers: [TrackerRecord] = [
+//    TrackerRecord(trackerID: "0", date: Date()),
+//    TrackerRecord(trackerID: "1", date: Date()),
+//    TrackerRecord(trackerID: "1", date: Calendar.current.date(byAdding: .day, value: -1, to: Date())!),
+//]
 
-var testCompletedTrackers: [TrackerRecord] = [
-    TrackerRecord(trackerID: "0", date: Date()),
-    TrackerRecord(trackerID: "1", date: Date()),
-    TrackerRecord(trackerID: "1", date: Calendar.current.date(byAdding: .day, value: -1, to: Date())!),
-]
-
+// экран с коллекцией трекеров
 final class TrackersViewController: UIViewController {
     
     private lazy var addButton: UIBarButtonItem = {
@@ -86,10 +87,10 @@ final class TrackersViewController: UIViewController {
     }()
     
     private var currentDate = Date()
-    private var categories: [TrackerCategory] = testCategories // [] testCategories
-    private var categoriesFilteredBySearch: [TrackerCategory] = testCategories // [] testCategories
-    private var categoriesFilteredByDate: [TrackerCategory] = testCategories // [] testCategories
-    private var completedTrackers: [TrackerRecord] = testCompletedTrackers // [] testCompletedTrackers
+    private var categories: [TrackerCategory] = [] // [] testCategories
+    private var categoriesFilteredBySearch: [TrackerCategory] = [] // [] testCategories
+    private var categoriesFilteredByDate: [TrackerCategory] = [] // [] testCategories
+    private var completedTrackers: [TrackerRecord] = [] // [] testCompletedTrackers
     private let collectionParams = GeometricParams(cellCount: 2, leftInset: 0, rightInset: 0, cellSpacing: 9)
     
     override func viewDidLoad() {
@@ -329,6 +330,7 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 }
 
+// для управления SearchBar'ом
 extension TrackersViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {

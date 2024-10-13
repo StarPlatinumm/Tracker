@@ -1,5 +1,6 @@
 import UIKit
 
+// ячейка трекера
 final class TrackerCollectionCell: UICollectionViewCell {
     
     static let identifier = "TrackerCell"

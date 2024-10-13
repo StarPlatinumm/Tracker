@@ -1,5 +1,6 @@
 import UIKit
 
+// переиспользуемые стилизованный TextField
 final class TextFieldWithPadding: UITextField {
     var textPadding = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     

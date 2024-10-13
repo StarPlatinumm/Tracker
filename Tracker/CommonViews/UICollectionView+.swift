@@ -2,6 +2,7 @@ import UIKit
 
 extension UICollectionView {
     
+    // когда не добавлено ни одного рекера
     func setEmptyTrackers() {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.height))
         
@@ -31,6 +32,7 @@ extension UICollectionView {
         self.backgroundView = view;
     }
     
+    // когда после фильтрации не осталось ни одного трекера
     func setNoTrackersFound() {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.height))
         
@@ -60,6 +62,7 @@ extension UICollectionView {
         self.backgroundView = view;
     }
 
+    // возвращаемся в обычное состояние
     func restore() {
         self.backgroundView = nil
     }

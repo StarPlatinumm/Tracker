@@ -66,8 +66,8 @@ final class SetScheduleViewController: UIViewController {
         // кнопка "Готово"
         mainStackView.addArrangedSubview(doneButtonView)
         
-        scrollView.addSubview(mainStackView) // добавляем на экран скролл вью
-        view.addSubview(scrollView)          // в скролл вью добавляем стек со всеми элементами
+        scrollView.addSubview(mainStackView)
+        view.addSubview(scrollView)
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),

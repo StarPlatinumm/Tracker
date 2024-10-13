@@ -229,7 +229,7 @@ final class CreateTrackerViewController: UIViewController {
     
     @objc func createButtonTapped() {
         self.onCreateTracker(
-            Tracker(id: 9, name: self.trackerName, color: self.trackerColor, emoji: self.trackerEmoji, schedule: self.schedule),
+            Tracker(id: UUID().uuidString, name: self.trackerName, color: self.trackerColor, emoji: self.trackerEmoji, schedule: self.schedule),
             self.category.title
         )
         

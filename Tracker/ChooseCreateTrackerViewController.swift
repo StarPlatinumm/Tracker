@@ -2,6 +2,17 @@ import UIKit
 
 final class ChooseCreateTrackerViewController: UIViewController {
     
+    private let onAddTracker: (Tracker, String) -> Void
+    
+    init(onAddTracker: @escaping (Tracker, String) -> Void) {
+        self.onAddTracker = onAddTracker
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -42,10 +53,10 @@ final class ChooseCreateTrackerViewController: UIViewController {
     }
     
     @objc private func opencCreateTrackerWithSchedule() {
-        navigationController?.pushViewController(CreateTrackerViewController(isRegular: true), animated: true)
+        navigationController?.pushViewController(CreateTrackerViewController(onCreateTracker: self.onAddTracker, isRegular: true), animated: true)
     }
     
     @objc private func opencCreateTrackerWOSchedule() {
-        navigationController?.pushViewController(CreateTrackerViewController(isRegular: false), animated: true)
+        navigationController?.pushViewController(CreateTrackerViewController(onCreateTracker: self.onAddTracker, isRegular: false), animated: true)
     }
 }

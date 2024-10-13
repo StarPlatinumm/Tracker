@@ -1,6 +1,6 @@
 import UIKit
 
-class ScheduleTableCell: UITableViewCell {
+final class ScheduleTableCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

@@ -1,6 +1,6 @@
 import UIKit
 
-class TrackerCollectionCell: UICollectionViewCell {
+final class TrackerCollectionCell: UICollectionViewCell {
     
     static let identifier = "TrackerCell"
     

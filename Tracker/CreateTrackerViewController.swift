@@ -9,26 +9,32 @@ struct tableOption {
 
 final class CreateTrackerViewController: UIViewController {
     
+    private let onCreateTracker: (Tracker, String) -> Void
+    
     private let colorCollectionViewController = Collection6x3ViewController(type: .color)
     private let emojiCollectionViewController = Collection6x3ViewController(type: .emoji)
     
-    private var warningHeightConstraint: NSLayoutConstraint?
+    private var trackerName: String = ""
+    private var category: TrackerCategory = TrackerCategory(title: "Новые", trackers: [])
+    private var schedule: [Weekday] = []
+    private var trackerEmoji: String = "⭐️"
+    private var trackerColor: UIColor = .ypColorSelection13
+    private var tableOptions: [tableOption] = []
     
-    var schedule: [Weekday] = []
-    var tableOptions: [tableOption] = []
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError()
-    }
-    
-    init(isRegular: Bool) {
-        self.tableOptions.append(tableOption(title: "Категория", vc: ChooseCreateTrackerViewController.self))
+    init(onCreateTracker: @escaping (Tracker, String) -> Void, isRegular: Bool) {
+        self.onCreateTracker = onCreateTracker
+        
+        self.tableOptions.append(tableOption(title: "Категория", subtitle: category.title, vc: ChooseCreateTrackerViewController.self))
         if isRegular {
             // если событие регулярное (привычка), то добавляем в меню пункт "Расписание"
             self.tableOptions.append(tableOption(title: "Расписание", vc: SetScheduleViewController.self))
         }
         
         super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError()
     }
     
     private lazy var scrollView: UIScrollView = {
@@ -98,13 +104,15 @@ final class CreateTrackerViewController: UIViewController {
     }()
     
     private lazy var createButtonView: UIButton = {
-        let button = UIButton(type: .custom)
+        let button = CustomButton(type: .custom)
         button.setTitle("Создать", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 16
-        button.backgroundColor = .ypBlack
+        button.setBackgroundColor(.ypBlack, for: .normal)
+        button.setBackgroundColor(.ypGray, for: .disabled)
         button.isEnabled = false
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -116,6 +124,7 @@ final class CreateTrackerViewController: UIViewController {
         button.layer.borderWidth = 1.0
         button.layer.borderColor = UIColor.ypRed.cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -172,7 +181,7 @@ final class CreateTrackerViewController: UIViewController {
         ])
     }
     
-    func onUpdateSchedule(_ schedule: [Weekday]) {
+    private func onUpdateSchedule(_ schedule: [Weekday]) {
         self.schedule = schedule
         if schedule.count == 7 {
             self.tableOptions[1].subtitle = "Каждый день"
@@ -190,6 +199,12 @@ final class CreateTrackerViewController: UIViewController {
             }.joined(separator: ", ")
         }
         self.tableView.reloadData()
+        self.updateCreateButtonState()
+    }
+    
+    // блокирует/разблокирует кнопку "Создать"
+    private func updateCreateButtonState() {
+        createButtonView.isEnabled = !self.trackerName.isEmpty && !self.schedule.isEmpty
     }
     
     @objc private func textFieldDidChange(_ textField: UITextField) {
@@ -197,6 +212,32 @@ final class CreateTrackerViewController: UIViewController {
         if let length = textField.text?.count {
             longNameWarningLabel.isHidden = length <= 38
             view.layoutIfNeeded()
+        }
+        
+        if longNameWarningLabel.isHidden {
+            self.trackerName = textField.text ?? ""
+        } else {
+            self.trackerName = ""
+        }
+        
+        self.updateCreateButtonState()
+    }
+    
+    @objc func cancelButtonTapped() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func createButtonTapped() {
+        self.onCreateTracker(
+            Tracker(id: 9, name: self.trackerName, color: self.trackerColor, emoji: self.trackerEmoji, schedule: self.schedule),
+            self.category.title
+        )
+        
+        // возвращаемся на экран со списком трекеров
+        if let viewControllers = navigationController?.viewControllers {
+            for vc in viewControllers {
+                vc.dismiss(animated: true)
+            }
         }
     }
 }
@@ -221,10 +262,6 @@ extension CreateTrackerViewController: UITableViewDelegate {
         let selected = self.tableOptions[indexPath.row].title
         if selected == "Категория" {
             // переход в выбор категории
-            navigationController?.pushViewController(
-                ChooseCreateTrackerViewController(),
-                animated: true
-            )
         } else if selected == "Расписание" {
             // переход в выбор расписания
             navigationController?.pushViewController(

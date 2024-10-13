@@ -21,7 +21,7 @@ var testCompletedTrackers: [TrackerRecord] = [
     TrackerRecord(trackerID: 1, date: Calendar.current.date(byAdding: .day, value: -1, to: Date())!),
 ]
 
-class TrackersViewController: UIViewController {
+final class TrackersViewController: UIViewController {
     
     private lazy var addButton: UIBarButtonItem = {
         let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
@@ -161,6 +161,17 @@ class TrackersViewController: UIViewController {
         }
     }
     
+    // добавляет новый трекер в коллекцию
+    private func addTracker(_ tracker: Tracker, categoryName: String) {
+        //  проверяем, есть ли категория в списке
+        if categories.contains(where: { $0.title == categoryName }) {
+            categories = categories.map { $0.title == categoryName ? TrackerCategory(title: $0.title, trackers: $0.trackers + [tracker]) : $0 }
+        } else {
+            categories.insert(TrackerCategory(title: categoryName, trackers: [tracker]), at: 0)
+        }
+        trackersCollection.reloadData()
+    }
+    
     // отмечает трекер как выполненный в текущую дату
     @objc private func updateTrackersDoneStatus(_ trackerID: UInt, _ isAdding: Bool) {
         if isAdding {
@@ -180,7 +191,7 @@ class TrackersViewController: UIViewController {
     
     // добавление нового трекера
     @objc private func addTapped() {
-        present(UINavigationController(rootViewController: ChooseCreateTrackerViewController()), animated: true, completion: nil)
+        present(UINavigationController(rootViewController: ChooseCreateTrackerViewController(onAddTracker: addTracker)), animated: true, completion: nil)
     }
 }
 

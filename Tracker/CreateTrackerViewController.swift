@@ -10,6 +10,7 @@ struct tableOption {
 final class CreateTrackerViewController: UIViewController {
     
     private let onCreateTracker: (Tracker, String) -> Void
+    private let isRegular: Bool
     
     private let colorCollectionViewController = Collection6x3ViewController(type: .color)
     private let emojiCollectionViewController = Collection6x3ViewController(type: .emoji)
@@ -23,6 +24,7 @@ final class CreateTrackerViewController: UIViewController {
     
     init(onCreateTracker: @escaping (Tracker, String) -> Void, isRegular: Bool) {
         self.onCreateTracker = onCreateTracker
+        self.isRegular = isRegular
         
         self.tableOptions.append(tableOption(title: "Категория", subtitle: category.title, vc: ChooseCreateTrackerViewController.self))
         if isRegular {
@@ -204,7 +206,7 @@ final class CreateTrackerViewController: UIViewController {
     
     // блокирует/разблокирует кнопку "Создать"
     private func updateCreateButtonState() {
-        createButtonView.isEnabled = !self.trackerName.isEmpty && !self.schedule.isEmpty
+        createButtonView.isEnabled = !self.trackerName.isEmpty && (!self.schedule.isEmpty || !isRegular)
     }
     
     @objc private func textFieldDidChange(_ textField: UITextField) {

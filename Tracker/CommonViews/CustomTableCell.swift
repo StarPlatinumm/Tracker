@@ -32,8 +32,7 @@ final class CustomTableCell: UITableViewCell {
                 // если строчка только одна (скругляем полностью)
                 layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
                 separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: CGFloat.greatestFiniteMagnitude)
-            }
-            if indexPath.row == 0 {
+            } else if indexPath.row == 0 {
                 // первая строчка (скругляем сверху)
                 layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             } else if indexPath.row == (superview as! UITableView).numberOfRows(inSection: indexPath.section) - 1 {

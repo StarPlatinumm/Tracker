@@ -185,7 +185,7 @@ final class TrackersViewController: UIViewController {
             return ""
         }
         
-        let days = completedTrackers.count(where: { $0.trackerID == tracker.id })
+        let days = completedTrackers.filter({$0.trackerID == tracker.id}).count
         
         if days % 10 == 1 && days % 100 != 11 {
             return "\(days) день"
@@ -238,12 +238,12 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         if (categoriesFilteredBySearch.count == 0) {
             if (categories.count == 0) {
-                trackersCollection.setEmptyTrackers()
+                setBGViewToCollection(trackersCollection, imageName: "trackers-placeholder", text: "Что будем отслеживать?")
             } else {
-                trackersCollection.setNoTrackersFound()
+                setBGViewToCollection(trackersCollection, imageName: "no-trackers-found", text: "Ничего не найдено")
             }
         } else {
-            trackersCollection.restore()
+            trackersCollection.backgroundView = nil
         }
         
         return categoriesFilteredBySearch.count
@@ -356,5 +356,38 @@ extension TrackersViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         categoriesFilteredBySearch = categoriesFilteredByDate
         trackersCollection.reloadData()
+    }
+}
+
+// для настройки плейсхолдеров коллекции трекеров
+extension TrackersViewController {
+
+    func setBGViewToCollection(_ collectionView: UICollectionView, imageName: String, text: String) {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: collectionView.bounds.size.width, height: collectionView.bounds.size.height))
+        
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: imageName)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+
+        let label = UILabel()
+        label.text = text
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.textColor = .ypBlack
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(imageView)
+        view.addSubview(label)
+        
+        NSLayoutConstraint.activate([
+            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            imageView.widthAnchor.constraint(equalToConstant: 80),
+            imageView.heightAnchor.constraint(equalToConstant: 80),
+            
+            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            label.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
+        ])
+        
+        collectionView.backgroundView = view;
     }
 }

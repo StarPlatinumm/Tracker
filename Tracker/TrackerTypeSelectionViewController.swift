@@ -8,7 +8,7 @@ struct tableOption {
 }
 
 // экран создания нового трекера
-final class CreateTrackerViewController: UIViewController {
+final class TrackerTypeSelectionViewController: UIViewController {
     
     private let onCreateTracker: (Tracker, String) -> Void
     private let isRegular: Bool
@@ -246,7 +246,7 @@ final class CreateTrackerViewController: UIViewController {
 }
 
 // TableViewDataSource Protocol
-extension CreateTrackerViewController: UITableViewDataSource {
+extension TrackerTypeSelectionViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.tableOptions.count
     }
@@ -260,7 +260,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
 }
 
 // TableViewDelegate Protocol
-extension CreateTrackerViewController: UITableViewDelegate {
+extension TrackerTypeSelectionViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selected = self.tableOptions[indexPath.row].title
         if selected == "Категория" {

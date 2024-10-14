@@ -21,26 +21,26 @@ final class ChooseCreateTrackerViewController: UIViewController {
         
         self.title = "Создание трекера"
         
-        let button1 = getButton("Привычка")
-        button1.addTarget(self, action: #selector(opencCreateTrackerWithSchedule), for: .touchUpInside)
-        let button2 = getButton("Нерегулярное событие")
-        button2.addTarget(self, action: #selector(opencCreateTrackerWOSchedule), for: .touchUpInside)
+        let regularEventButton = getButton("Привычка")
+        regularEventButton.addTarget(self, action: #selector(opencCreateTrackerWithSchedule), for: .touchUpInside)
+        let irregularEventButton = getButton("Нерегулярное событие")
+        irregularEventButton.addTarget(self, action: #selector(opencCreateTrackerWOSchedule), for: .touchUpInside)
         
-        view.addSubview(button1)
-        view.addSubview(button2)
+        view.addSubview(regularEventButton)
+        view.addSubview(irregularEventButton)
         
         NSLayoutConstraint.activate([
-            button1.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            button1.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            button1.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
-            button1.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
-            button1.heightAnchor.constraint(equalToConstant: 60),
+            regularEventButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            regularEventButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            regularEventButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
+            regularEventButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
+            regularEventButton.heightAnchor.constraint(equalToConstant: 60),
             
-            button2.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            button2.topAnchor.constraint(equalTo: button1.bottomAnchor, constant: 16),
-            button2.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
-            button2.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
-            button2.heightAnchor.constraint(equalToConstant: 60),
+            irregularEventButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            irregularEventButton.topAnchor.constraint(equalTo: regularEventButton.bottomAnchor, constant: 16),
+            irregularEventButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
+            irregularEventButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
+            irregularEventButton.heightAnchor.constraint(equalToConstant: 60),
         ])
     }
     
@@ -54,10 +54,10 @@ final class ChooseCreateTrackerViewController: UIViewController {
     }
     
     @objc private func opencCreateTrackerWithSchedule() {
-        navigationController?.pushViewController(CreateTrackerViewController(onCreateTracker: self.onAddTracker, isRegular: true), animated: true)
+        navigationController?.pushViewController(TrackerTypeSelectionViewController(onCreateTracker: self.onAddTracker, isRegular: true), animated: true)
     }
     
     @objc private func opencCreateTrackerWOSchedule() {
-        navigationController?.pushViewController(CreateTrackerViewController(onCreateTracker: self.onAddTracker, isRegular: false), animated: true)
+        navigationController?.pushViewController(TrackerTypeSelectionViewController(onCreateTracker: self.onAddTracker, isRegular: false), animated: true)
     }
 }

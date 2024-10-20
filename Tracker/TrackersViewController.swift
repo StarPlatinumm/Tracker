@@ -206,6 +206,8 @@ final class TrackersViewController: UIViewController {
         }
         searchBarController.searchBar.text = ""
         filterTrackersByCurrentDate()
+        
+        print("categories: ", categories)
     }
     
     // отмечает трекер как выполненный в текущую дату
@@ -273,7 +275,8 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
             cell.addButton.isSelected = false
         }
         
-        cell.addButton.isHidden = !Calendar.current.isDate(Date(), inSameDayAs: currentDate)
+        // скрываем "+" для будущих дат
+        cell.addButton.isHidden = Calendar.current.compare(Date(), to: currentDate, toGranularity: .day) == .orderedAscending
         
         return cell
     }

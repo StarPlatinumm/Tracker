@@ -16,7 +16,10 @@ final class CustomTableCell: UITableViewCell {
         separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         selectionStyle = .none
         
+        textLabel?.font = .systemFont(ofSize: 17)
+        
         detailTextLabel?.textColor = .ypGray
+        detailTextLabel?.font = .systemFont(ofSize: 17)
     }
     
     required init?(coder: NSCoder) {

@@ -5,6 +5,7 @@ final class ScheduleViewController: UIViewController {
     private var schedule: [Weekday]
     private let updateSchedule: ([Weekday]) -> Void
     private let tableOptions: [Weekday] = [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
+    private let weekdaysText = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
     
     required init?(coder aDecoder: NSCoder) {
         fatalError()
@@ -110,7 +111,7 @@ final class ScheduleViewController: UIViewController {
     }
     
     @objc func doneButtonTapped() {
-        self.updateSchedule(self.schedule)
+        self.updateSchedule(self.schedule.sorted { $0.rawValue < $1.rawValue })
         navigationController?.popViewController(animated: true)
     }
 }
@@ -123,7 +124,7 @@ extension ScheduleViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! ScheduleTableCell
-        cell.textLabel?.text = self.tableOptions[indexPath.row].rawValue
+        cell.textLabel?.text = self.weekdaysText[indexPath.row]
         
         let switchView = createSwitchView(id: indexPath.row)
         cell.accessoryView = switchView

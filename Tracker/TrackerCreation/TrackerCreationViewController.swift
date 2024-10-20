@@ -33,6 +33,8 @@ final class TrackerCreationViewController: UIViewController {
     private var selectedColor: IndexPath? = nil
     private var tableOptions: [tableOption] = []
     
+    private let weekdaysText = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
+    
     init(onCreateTracker: @escaping (Tracker, String) -> Void, isRegular: Bool) {
         self.onCreateTracker = onCreateTracker
         self.isRegular = isRegular
@@ -188,17 +190,7 @@ final class TrackerCreationViewController: UIViewController {
         if schedule.count == 7 {
             self.tableOptions[1].subtitle = "Каждый день"
         } else {
-            self.tableOptions[1].subtitle = schedule.map { item in
-                switch item {
-                case .monday: return "Пн"
-                case .tuesday: return "Вт"
-                case .wednesday: return "Ср"
-                case .thursday: return "Чт"
-                case .friday: return "Пт"
-                case .saturday: return "Сб"
-                case .sunday: return "Вс"
-                }
-            }.joined(separator: ", ")
+            self.tableOptions[1].subtitle = schedule.map { weekdaysText[$0.rawValue]}.joined(separator: ", ")
         }
         self.tableView.reloadData()
         self.updateCreateButtonState()

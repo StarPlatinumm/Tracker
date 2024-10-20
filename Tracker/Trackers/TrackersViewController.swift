@@ -129,12 +129,12 @@ final class TrackersViewController: UIViewController {
         let calendar = Calendar.current
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "ru_RU")
-        let weekday = calendar.component(.weekday, from: currentDate)
-        let weekdayString = dateFormatter.weekdaySymbols[weekday - 1].capitalized
+        let weekday = (calendar.component(.weekday, from: currentDate) + 5) % 7 // преобразуем так, чтобы пн = 0, ..., вс = 6
         
-        print("weekdayString: ", weekdayString)
-        
-        if let currentWeekday = Weekday(rawValue: weekdayString) {
+        if let currentWeekday = Weekday(rawValue: weekday) {
+            print("calendar.component(.weekday, from: currentDate): ", calendar.component(.weekday, from: currentDate))
+            print("weekday: ", weekday)
+            print("currentWeekday: ", currentWeekday)
             categoriesFilteredByDate = categories.compactMap { category in
                 let filteredTrackers = category.trackers.filter { tracker in
                     if tracker.schedule.contains(currentWeekday) {
@@ -206,8 +206,6 @@ final class TrackersViewController: UIViewController {
         }
         searchBarController.searchBar.text = ""
         filterTrackersByCurrentDate()
-        
-        print("categories: ", categories)
     }
     
     // отмечает трекер как выполненный в текущую дату

@@ -229,7 +229,7 @@ final class TrackersViewController: UIViewController {
     
     // добавление нового трекера
     @objc private func addTapped() {
-        present(UINavigationController(rootViewController: ChooseCreateTrackerViewController(onAddTracker: addTracker)), animated: true, completion: nil)
+        present(UINavigationController(rootViewController: TrackerTypeSelectionViewController(onAddTracker: addTracker)), animated: true, completion: nil)
     }
 }
 

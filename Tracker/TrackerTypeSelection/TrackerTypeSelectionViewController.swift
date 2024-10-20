@@ -1,7 +1,7 @@
 import UIKit
 
 // экран выбора создания привычки или нерегулярного события
-final class ChooseCreateTrackerViewController: UIViewController {
+final class TrackerTypeSelectionViewController: UIViewController {
     
     private let onAddTracker: (Tracker, String) -> Void
     

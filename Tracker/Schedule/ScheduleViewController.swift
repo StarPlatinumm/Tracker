@@ -1,7 +1,7 @@
 
 import UIKit
 
-final class SetScheduleViewController: UIViewController {
+final class ScheduleViewController: UIViewController {
     private var schedule: [Weekday]
     private let updateSchedule: ([Weekday]) -> Void
     private let tableOptions: [Weekday] = [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
@@ -116,7 +116,7 @@ final class SetScheduleViewController: UIViewController {
 }
 
 // TableViewDataSource Protocol
-extension SetScheduleViewController: UITableViewDataSource {
+extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.tableOptions.count
     }
@@ -132,7 +132,7 @@ extension SetScheduleViewController: UITableViewDataSource {
 }
 
 // TableViewDelegate Protocol
-extension SetScheduleViewController: UITableViewDelegate {
+extension ScheduleViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //
     }

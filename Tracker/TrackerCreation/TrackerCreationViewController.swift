@@ -37,10 +37,10 @@ final class TrackerCreationViewController: UIViewController {
         self.onCreateTracker = onCreateTracker
         self.isRegular = isRegular
         
-        self.tableOptions.append(tableOption(title: "Категория", subtitle: category.title, vc: ChooseCreateTrackerViewController.self))
+        self.tableOptions.append(tableOption(title: "Категория", subtitle: category.title, vc: TrackerTypeSelectionViewController.self))
         if isRegular {
             // если событие регулярное (привычка), то добавляем в меню пункт "Расписание"
-            self.tableOptions.append(tableOption(title: "Расписание", vc: SetScheduleViewController.self))
+            self.tableOptions.append(tableOption(title: "Расписание", vc: ScheduleViewController.self))
         }
         
         super.init(nibName: nil, bundle: nil)
@@ -275,7 +275,7 @@ extension TrackerCreationViewController: UITableViewDelegate {
         } else if selected == "Расписание" {
             // переход в выбор расписания
             navigationController?.pushViewController(
-                SetScheduleViewController(schedule: self.schedule, updateSchedule: self.onUpdateSchedule),
+                ScheduleViewController(schedule: self.schedule, updateSchedule: self.onUpdateSchedule),
                 animated: true
             )
         }

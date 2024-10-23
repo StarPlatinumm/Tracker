@@ -9,7 +9,7 @@ struct Tracker {
     let schedule: [Weekday]
 }
 
-enum Weekday: Int {
+enum Weekday: Int, Codable {
     case monday
     case tuesday
     case wednesday

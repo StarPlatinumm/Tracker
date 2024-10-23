@@ -132,9 +132,6 @@ final class TrackersViewController: UIViewController {
         let weekday = (calendar.component(.weekday, from: currentDate) + 5) % 7 // преобразуем так, чтобы пн = 0, ..., вс = 6
         
         if let currentWeekday = Weekday(rawValue: weekday) {
-            print("calendar.component(.weekday, from: currentDate): ", calendar.component(.weekday, from: currentDate))
-            print("weekday: ", weekday)
-            print("currentWeekday: ", currentWeekday)
             categoriesFilteredByDate = categories.compactMap { category in
                 let filteredTrackers = category.trackers.filter { tracker in
                     if tracker.schedule.contains(currentWeekday) {

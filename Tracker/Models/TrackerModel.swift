@@ -19,7 +19,3 @@ enum Weekday: Int, Codable {
     case sunday
 }
 
-
-
-
-

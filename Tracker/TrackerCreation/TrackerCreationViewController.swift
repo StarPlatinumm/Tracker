@@ -231,7 +231,7 @@ final class TrackerCreationViewController: UIViewController {
         else { return }
         
         self.onCreateTracker(
-            Tracker(id: UUID().uuidString, name: self.trackerName, color: trackerColor, emoji: trackerEmoji, schedule: self.schedule),
+            Tracker(id: "", name: self.trackerName, color: trackerColor, emoji: trackerEmoji, schedule: self.schedule),
             self.category.title
         )
         

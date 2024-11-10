@@ -4,12 +4,19 @@ import CoreData
 final class TrackerCategoryStore {
     private let context: NSManagedObjectContext
 
-    convenience init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        self.init(context: context)
-    }
-
     init(context: NSManagedObjectContext) {
         self.context = context
+    }
+    
+    func add(_ trackerCategory: TrackerCategory) throws {
+        let managedRecord = TrackerCategoryCoreData(context: context)
+        managedRecord.title = trackerCategory.title
+//        managedRecord.trackers = trackerCategory.
+        try context.save()
+    }
+    
+    func delete(_ tracker: NSManagedObject) throws {
+        context.delete(tracker)
+        try context.save()
     }
 }

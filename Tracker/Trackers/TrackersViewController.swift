@@ -200,7 +200,19 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
     
     // количество категорий
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return dataProvider?.numberOfSections ?? 1
+        let sectionsCount = dataProvider?.numberOfSections ?? 0
+        if (sectionsCount == 0) {
+            let totalTrackersCount = dataProvider?.getTrackers().count ?? 0
+            if (totalTrackersCount == 0) {
+                setBGViewToCollection(trackersCollection, imageName: "trackers-placeholder", text: "Что будем отслеживать?")
+            } else {
+                setBGViewToCollection(trackersCollection, imageName: "no-trackers-found", text: "Ничего не найдено")
+            }
+        } else {
+            trackersCollection.backgroundView = nil
+        }
+        
+        return sectionsCount
     }
     
     // количество ячеек в каждой категории

@@ -1,6 +1,10 @@
 import UIKit
 import CoreData
 
+enum TrackerError: Error {
+    case invalidTrackerID
+}
+
 final class TrackerRecordStore {
     private let context: NSManagedObjectContext
     
@@ -13,9 +17,19 @@ final class TrackerRecordStore {
     }
     
     func addTrackerRecord(trackerID: String, date: Date) throws {
+        // сначала получаем трекер
+        guard
+            let url = URL(string: trackerID),
+            let objectID = context.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: url),
+            let tracker = try? context.existingObject(with: objectID) as? TrackerCoreData else {
+            throw TrackerError.invalidTrackerID
+        }
+        
+        // потом создаём новую запись
         let trackerRecord = TrackerRecordCoreData(context: context)
         trackerRecord.trackerID = trackerID
         trackerRecord.date = Calendar.current.startOfDay(for: date)
+        trackerRecord.tracker = tracker
         try context.save()
     }
     

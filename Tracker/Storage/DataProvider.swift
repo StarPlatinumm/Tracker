@@ -72,7 +72,10 @@ final class DataProvider: NSObject {
     func filterTrackers(date: Date, filter: String) {
         let weekday = String((Calendar.current.component(.weekday, from: date) + 5) % 7) // преобразуем так, чтобы пн = 0, ..., вс = 6
         
-        let newPredicate = NSPredicate(format: "schedule LIKE[c] %@ AND name LIKE[c] %@", argumentArray: ["*\(weekday)*", "*\(filter)*"])
+        let newPredicate = NSPredicate(
+            format: "name LIKE[c] %@ AND (schedule LIKE %@ OR ANY record.date = %@ OR (record.@count == 0 AND schedule == ''))",
+            argumentArray: ["*\(weekday)*", "*\(filter)*", date]
+        )
 
         fetchedResultsController.fetchRequest.predicate = newPredicate
 

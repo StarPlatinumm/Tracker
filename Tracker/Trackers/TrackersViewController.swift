@@ -150,39 +150,6 @@ final class TrackersViewController: UIViewController {
         trackersCollection.reloadData()
     }
     
-//    private func filterTrackersByCurrentDate() {
-//        // получаем день недели выбранной даты
-//        let calendar = Calendar.current
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.locale = Locale(identifier: "ru_RU")
-//        let weekday = (calendar.component(.weekday, from: currentDate) + 5) % 7 // преобразуем так, чтобы пн = 0, ..., вс = 6
-//        
-//        if let currentWeekday = Weekday(rawValue: weekday) {
-//            categoriesFilteredByDate = categories.compactMap { category in
-//                let filteredTrackers = category.trackers.filter { tracker in
-//                    if tracker.schedule.contains(currentWeekday) {
-//                        // регулярное событие, выпадающее на выбранную дату
-//                        return true
-//                    } else if tracker.schedule.isEmpty && !isTrackerEverBeenDone(tracker.id) {
-//                        // невыполненное нерегулярное событие
-//                        return true
-//                    } else if tracker.schedule.isEmpty && isTrackerDoneOnCurrentDate(tracker.id) {
-//                        // выполненное в выбранную дату нерегулярное событие
-//                        return true
-//                    }
-//                    return false
-//                }
-//                if filteredTrackers.isEmpty {
-//                    return nil
-//                } else {
-//                    return TrackerCategory(title: category.title, trackers: filteredTrackers)
-//                }
-//            }
-//            categoriesFilteredBySearch = categoriesFilteredByDate
-//            trackersCollection.reloadData()
-//        }
-//    }
-    
     // обновление текущей даты
     @objc private func dateChanged() {
         currentDate = datePicker.date

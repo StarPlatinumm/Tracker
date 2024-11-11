@@ -1,6 +1,7 @@
 import UIKit
 import CoreData
 
+// TODO: 
 final class TrackerCategoryStore {
     private let context: NSManagedObjectContext
 
@@ -11,7 +12,6 @@ final class TrackerCategoryStore {
     func add(_ trackerCategory: TrackerCategory) throws {
         let managedRecord = TrackerCategoryCoreData(context: context)
         managedRecord.title = trackerCategory.title
-//        managedRecord.trackers = trackerCategory.
         try context.save()
     }
     

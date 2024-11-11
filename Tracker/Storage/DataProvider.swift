@@ -47,8 +47,11 @@ final class DataProvider: NSObject {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
         
-        let currentwWeekday = String((Calendar.current.component(.weekday, from: Date()) + 5) % 7) // преобразуем так, чтобы пн = 0, ..., вс = 6
-        fetchRequest.predicate = NSPredicate(format: "schedule LIKE[c] %@", argumentArray: ["*\(currentwWeekday)*"])
+        let currentwWeekday = getCorrectWeekdayNum(from: Date())
+        fetchRequest.predicate = NSPredicate(
+            format: "name LIKE[c] %@ AND (schedule LIKE %@ OR ANY record.date = %@ OR (record.@count == 0 AND schedule == ''))",
+            argumentArray: ["*", "*\(currentwWeekday)*", Calendar.current.startOfDay(for: Date())]
+        )
         
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                                   managedObjectContext: context,
@@ -69,12 +72,17 @@ final class DataProvider: NSObject {
         self.trackerRecordStore = TrackerRecordStore(context: context)
     }
     
+    private func getCorrectWeekdayNum(from date: Date) -> String {
+        // преобразуем так, чтобы пн = 0, ..., вс = 6
+        return String((Calendar.current.component(.weekday, from: date) + 5) % 7)
+    }
+    
     func filterTrackers(date: Date, filter: String) {
-        let weekday = String((Calendar.current.component(.weekday, from: date) + 5) % 7) // преобразуем так, чтобы пн = 0, ..., вс = 6
+        let weekday = getCorrectWeekdayNum(from: date)
         
         let newPredicate = NSPredicate(
             format: "name LIKE[c] %@ AND (schedule LIKE %@ OR ANY record.date = %@ OR (record.@count == 0 AND schedule == ''))",
-            argumentArray: ["*\(weekday)*", "*\(filter)*", date]
+            argumentArray: ["*\(filter)*", "*\(weekday)*", Calendar.current.startOfDay(for: date)]
         )
 
         fetchedResultsController.fetchRequest.predicate = newPredicate

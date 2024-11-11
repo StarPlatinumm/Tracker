@@ -7,6 +7,7 @@ final class ScheduleTransformer {
     }
 
     func toWeekdays(_ string: String) -> [Weekday] {
+        if string.isEmpty { return [] }
         return string.components(separatedBy: ", ").compactMap { Weekday(rawValue: Int($0) ?? 0) }
     }
 }

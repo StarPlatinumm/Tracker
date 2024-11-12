@@ -175,13 +175,15 @@ extension DataProvider: NSFetchedResultsControllerDelegate {
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        guard let insertedIndexes, let deletedIndexes else { return }
+        
         delegate?.didUpdate(TrackerStoreUpdate(
-                insertedIndexes: insertedIndexes!,
-                deletedIndexes: deletedIndexes!
+                insertedIndexes: insertedIndexes,
+                deletedIndexes: deletedIndexes
             )
         )
-        insertedIndexes = nil
-        deletedIndexes = nil
+        self.insertedIndexes = nil
+        self.deletedIndexes = nil
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {

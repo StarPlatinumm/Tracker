@@ -1,7 +1,7 @@
 import UIKit
 import CoreData
 
-// TODO: 
+
 final class TrackerCategoryStore {
     private let context: NSManagedObjectContext
 

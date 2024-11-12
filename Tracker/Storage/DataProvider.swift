@@ -42,6 +42,7 @@ final class DataProvider: NSObject {
     private var insertedIndexes: IndexSet?
     private var deletedIndexes: IndexSet?
     
+    // контроллер для обновления коллекции трекеров
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCoreData> = {
 
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
@@ -62,8 +63,15 @@ final class DataProvider: NSObject {
         return fetchedResultsController
     }()
     
-    init(delegate: DataProviderDelegate) throws {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    init?(delegate: DataProviderDelegate) throws {
+        let container = NSPersistentContainer(name: "Trackers")
+        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            if let error = error as NSError? {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        })
+        
+        let context = container.viewContext
         
         self.delegate = delegate
         self.context = context

@@ -1,9 +1,9 @@
 import UIKit
 
-final class Collection6x3Cell: UICollectionViewCell {
+final class EmojiCollectionCell: UICollectionViewCell {
     
     // Идентификатор ячейки — используется для регистрации и восстановления:
-    static let identifier = "Collection6x3Cell"
+    static let identifier = "EmojiCell"
     
     let textLabel: UILabel = {
         let label = UILabel()
@@ -32,4 +32,11 @@ final class Collection6x3Cell: UICollectionViewCell {
         super.init(coder: coder)
     }
     
+    func setEmoji(_ emoji: String) {
+        textLabel.text = emoji
+    }
+    
+    func didSelect(_ value: Bool) {
+        contentView.backgroundColor = value ? .ypLightGray.withAlphaComponent(1) : .clear
+    }
 }

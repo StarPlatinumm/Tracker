@@ -7,30 +7,42 @@ struct tableOption {
     let vc: UIViewController.Type
 }
 
+struct CollectionSectionsContent {
+    let title: String
+    let elements: [Any]
+}
+
 // экран создания нового трекера
-final class TrackerTypeSelectionViewController: UIViewController {
+final class TrackerCreationViewController: UIViewController {
     
     private let onCreateTracker: (Tracker, String) -> Void
     private let isRegular: Bool
     
-    private let colorCollectionViewController = Collection6x3ViewController(type: .color)
-    private let emojiCollectionViewController = Collection6x3ViewController(type: .emoji)
+    private let collectionParams = GeometricParams(cellCount: 6, leftInset: 8, rightInset: 8, cellSpacing: 6)
+    private let collectionContent: [CollectionSectionsContent] = [
+        .init(title: "Emoji", elements: ["🪴", "🧋", "🦭", "📍", "👀", "🎉",
+                                         "🌭", "🪽", "🐌", "🌵", "⚡️", "❤️",
+                                         "🎲", "✨", "🎈", "💰", "🐞", "⭐️"]),
+        .init(title: "Цвет", elements: (1...18).compactMap { UIColor(named: "ypColorSelection\($0)") })
+    ]
     
     private var trackerName: String = ""
     private var category: TrackerCategory = TrackerCategory(title: "Новые", trackers: [])
     private var schedule: [Weekday] = []
-    private var trackerEmoji: String = "⭐️"
-    private var trackerColor: UIColor = .ypColorSelection13
+    private var selectedEmoji: IndexPath? = nil
+    private var selectedColor: IndexPath? = nil
     private var tableOptions: [tableOption] = []
+    
+    private let weekdaysText = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
     
     init(onCreateTracker: @escaping (Tracker, String) -> Void, isRegular: Bool) {
         self.onCreateTracker = onCreateTracker
         self.isRegular = isRegular
         
-        self.tableOptions.append(tableOption(title: "Категория", subtitle: category.title, vc: ChooseCreateTrackerViewController.self))
+        self.tableOptions.append(tableOption(title: "Категория", subtitle: category.title, vc: TrackerTypeSelectionViewController.self))
         if isRegular {
             // если событие регулярное (привычка), то добавляем в меню пункт "Расписание"
-            self.tableOptions.append(tableOption(title: "Расписание", vc: SetScheduleViewController.self))
+            self.tableOptions.append(tableOption(title: "Расписание", vc: ScheduleViewController.self))
         }
         
         super.init(nibName: nil, bundle: nil)
@@ -86,23 +98,16 @@ final class TrackerTypeSelectionViewController: UIViewController {
         return table
     }()
     
-    private lazy var emojiCollection: UICollectionView = {
+    private lazy var emojiAndColorCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collection.register(Collection6x3Cell.self, forCellWithReuseIdentifier: Collection6x3Cell.identifier)
+        collection.register(EmojiCollectionCell.self, forCellWithReuseIdentifier: EmojiCollectionCell.identifier)
+        collection.register(ColorCollectionCell.self, forCellWithReuseIdentifier: ColorCollectionCell.identifier)
         collection.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         collection.translatesAutoresizingMaskIntoConstraints = false
-        collection.dataSource = self.emojiCollectionViewController
-        collection.delegate = self.emojiCollectionViewController
-        return collection
-    }()
-    
-    private lazy var colorCollection: UICollectionView = {
-        let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collection.register(Collection6x3Cell.self, forCellWithReuseIdentifier: Collection6x3Cell.identifier)
-        collection.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
-        collection.translatesAutoresizingMaskIntoConstraints = false
-        collection.dataSource = self.colorCollectionViewController
-        collection.delegate = self.colorCollectionViewController
+        collection.dataSource = self
+        collection.delegate = self
+        collection.isScrollEnabled = false
+        collection.allowsMultipleSelection = true
         return collection
     }()
     
@@ -148,11 +153,8 @@ final class TrackerTypeSelectionViewController: UIViewController {
         // выбор категории и расписания
         mainStackView.addArrangedSubview(tableView)
         
-        // выбор emoji
-//        mainStackView.addArrangedSubview(emojiCollection)
-        
-        // выбор цвета
-//        mainStackView.addArrangedSubview(colorCollection)
+        // выбор emoji и цвета
+        mainStackView.addArrangedSubview(emojiAndColorCollection)
         
         // кнопки снизу
         let buttonsStackView = UIStackView(arrangedSubviews: [cancelButtonView, createButtonView])
@@ -178,8 +180,7 @@ final class TrackerTypeSelectionViewController: UIViewController {
             
             nameTextField.heightAnchor.constraint(equalToConstant: 75),
             tableView.heightAnchor.constraint(equalToConstant: self.isRegular ? 151 : 76),
-//            emojiCollection.heightAnchor.constraint(equalToConstant: 240),
-//            colorCollection.heightAnchor.constraint(equalToConstant: 240),
+            emojiAndColorCollection.heightAnchor.constraint(equalToConstant: 460),
             buttonsStackView.heightAnchor.constraint(equalToConstant: 60),
         ])
     }
@@ -189,17 +190,7 @@ final class TrackerTypeSelectionViewController: UIViewController {
         if schedule.count == 7 {
             self.tableOptions[1].subtitle = "Каждый день"
         } else {
-            self.tableOptions[1].subtitle = schedule.map { item in
-                switch item {
-                case .monday: return "Пн"
-                case .tuesday: return "Вт"
-                case .wednesday: return "Ср"
-                case .thursday: return "Чт"
-                case .friday: return "Пт"
-                case .saturday: return "Сб"
-                case .sunday: return "Вс"
-                }
-            }.joined(separator: ", ")
+            self.tableOptions[1].subtitle = schedule.map { weekdaysText[$0.rawValue]}.joined(separator: ", ")
         }
         self.tableView.reloadData()
         self.updateCreateButtonState()
@@ -207,7 +198,11 @@ final class TrackerTypeSelectionViewController: UIViewController {
     
     // блокирует/разблокирует кнопку "Создать"
     private func updateCreateButtonState() {
-        createButtonView.isEnabled = !self.trackerName.isEmpty && (!self.schedule.isEmpty || !isRegular)
+        createButtonView.isEnabled =
+            !self.trackerName.isEmpty &&
+            (!self.schedule.isEmpty || !isRegular) &&
+            self.selectedColor != nil &&
+            self.selectedEmoji != nil
     }
     
     @objc private func textFieldDidChange(_ textField: UITextField) {
@@ -231,8 +226,12 @@ final class TrackerTypeSelectionViewController: UIViewController {
     }
     
     @objc func createButtonTapped() {
+        guard let trackerEmoji = collectionContent.first(where: { $0.title == "Emoji" })?.elements[selectedEmoji?.row ?? 0] as? String,
+              let trackerColor = collectionContent.first(where: { $0.title == "Цвет" })?.elements[selectedColor?.row ?? 0] as? UIColor
+        else { return }
+        
         self.onCreateTracker(
-            Tracker(id: UUID().uuidString, name: self.trackerName, color: self.trackerColor, emoji: self.trackerEmoji, schedule: self.schedule),
+            Tracker(id: "", name: self.trackerName, color: trackerColor, emoji: trackerEmoji, schedule: self.schedule),
             self.category.title
         )
         
@@ -246,7 +245,7 @@ final class TrackerTypeSelectionViewController: UIViewController {
 }
 
 // TableViewDataSource Protocol
-extension TrackerTypeSelectionViewController: UITableViewDataSource {
+extension TrackerCreationViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.tableOptions.count
     }
@@ -260,7 +259,7 @@ extension TrackerTypeSelectionViewController: UITableViewDataSource {
 }
 
 // TableViewDelegate Protocol
-extension TrackerTypeSelectionViewController: UITableViewDelegate {
+extension TrackerCreationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selected = self.tableOptions[indexPath.row].title
         if selected == "Категория" {
@@ -268,7 +267,7 @@ extension TrackerTypeSelectionViewController: UITableViewDelegate {
         } else if selected == "Расписание" {
             // переход в выбор расписания
             navigationController?.pushViewController(
-                SetScheduleViewController(schedule: self.schedule, updateSchedule: self.onUpdateSchedule),
+                ScheduleViewController(schedule: self.schedule, updateSchedule: self.onUpdateSchedule),
                 animated: true
             )
         }
@@ -279,3 +278,125 @@ extension TrackerTypeSelectionViewController: UITableViewDelegate {
     }
 }
 
+// работа с коллекцией
+extension TrackerCreationViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    // количество категорий
+    func numberOfSections(in collectionView: UICollectionView) -> Int { collectionContent.count }
+    
+    // кол-во элементов в секции
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int { collectionContent[section].elements.count }
+    
+    // настройка ячейки
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let section = collectionContent[indexPath.section]
+
+        if section.title == "Emoji" {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EmojiCollectionCell.identifier, for: indexPath) as? EmojiCollectionCell else {
+                return UICollectionViewCell()
+            }
+            
+            cell.prepareForReuse()
+            
+            // вписываем эмодзи
+            guard let emoji = section.elements[indexPath.row] as? String else { return cell }
+            cell.setEmoji(emoji)
+            
+            return cell
+        } else if section.title == "Цвет" {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ColorCollectionCell.identifier, for: indexPath) as? ColorCollectionCell else {
+                return UICollectionViewCell()
+            }
+            
+            cell.prepareForReuse()
+            
+            // задаём цвет
+            guard let color = section.elements[indexPath.row] as? UIColor else { return cell }
+            cell.setColor(color)
+            
+            return cell
+        }
+        
+        return UICollectionViewCell()
+    }
+    
+    // размеры ячейки
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let availableWidth = collectionView.frame.width - collectionParams.paddingWidth
+        let cellWidth =  availableWidth / CGFloat(collectionParams.cellCount)
+        return CGSize(width: cellWidth, height: cellWidth)
+    }
+    
+    // вертикальный отступ ячеек
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        collectionParams.cellSpacing
+    }
+    
+    // горизонтальные отступ ячеек
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        collectionParams.cellSpacing
+    }
+    
+    // отступ от краёв
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        UIEdgeInsets(top: 24, left: collectionParams.leftInset, bottom: 24, right: collectionParams.rightInset)
+    }
+    
+    // для хедера
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        
+        let indexPath = IndexPath(row: 0, section: section)
+        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
+        
+        return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width,
+                                                         height: UIView.layoutFittingExpandedSize.height),
+                                                  withHorizontalFittingPriority: .required,
+                                                  verticalFittingPriority: .fittingSizeLevel)
+    }
+    
+    // для хедера
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        var id: String
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
+            id = "header"
+        default:
+            id = ""
+        }
+        
+        let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! SupplementaryView
+        // текст заголовка
+        view.titleLabel.text = collectionContent[indexPath.section].title
+        return view
+    }
+    
+    // выделение ячейки
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let section = collectionContent[indexPath.section]
+
+        if section.title == "Emoji" {
+            // снимает выделение с предыдущей ячейки (если есть)
+            if let selectedEmoji {
+                guard let cell = collectionView.cellForItem(at: selectedEmoji) as? EmojiCollectionCell else { return }
+                cell.didSelect(false)
+                self.selectedEmoji = nil
+            }
+            // выделяем ячейку
+            guard let cell = collectionView.cellForItem(at: indexPath) as? EmojiCollectionCell else { return }
+            cell.didSelect(true)
+            self.selectedEmoji = indexPath
+        } else if section.title == "Цвет" {
+            // снимает выделение с предыдущей ячейки (если есть)
+            if let selectedColor {
+                guard let cell = collectionView.cellForItem(at: selectedColor) as? ColorCollectionCell else { return }
+                cell.didSelect(false)
+                self.selectedColor = nil
+            }
+            // выделяем ячейку
+            guard let cell = collectionView.cellForItem(at: indexPath) as? ColorCollectionCell else { return }
+            cell.didSelect(true)
+            self.selectedColor = indexPath
+        }
+
+        self.updateCreateButtonState()
+    }
+}

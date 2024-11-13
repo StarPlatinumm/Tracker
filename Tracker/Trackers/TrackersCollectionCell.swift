@@ -5,7 +5,7 @@ final class TrackerCollectionCell: UICollectionViewCell {
     
     static let identifier = "TrackerCell"
     
-    var onUpdateTrackersDoneStatus: ((String, Bool) -> Void)? = nil
+    var onUpdateTrackersDoneStatus: (() -> Void)? = nil
 
     lazy var cardView: UIView = {
         let view = UIView()
@@ -94,6 +94,6 @@ final class TrackerCollectionCell: UICollectionViewCell {
 
     @objc private func onAddButtonTapped(_ button: UIButton) {
         button.isSelected.toggle()
-        self.onUpdateTrackersDoneStatus?(button.accessibilityValue ?? "", button.isSelected)
+        if let onUpdateTrackersDoneStatus { onUpdateTrackersDoneStatus() }
     }
 }

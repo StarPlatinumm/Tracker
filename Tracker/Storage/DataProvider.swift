@@ -8,7 +8,6 @@ struct TrackerStoreUpdate {
 
 protocol DataProviderDelegate: AnyObject {
     func didUpdate(_ update: TrackerStoreUpdate)
-    func updateFilters()
 }
 
 protocol DataProviderProtocol {
@@ -19,6 +18,9 @@ protocol DataProviderProtocol {
     
     func getTrackers() -> [Tracker]
     func filterTrackers(date: Date, filter: String)
+    
+    func addCategory(categoryTitle: String)
+    func getCategoryNames() -> [String]
     
     func addTrackerRecord(trackerID: String, date: Date)
     func removeTrackerRecord(trackerID: String, date: Date)
@@ -155,6 +157,27 @@ extension DataProvider {
     }
 }
 
+// для работы с TrackerCategory
+extension DataProvider {
+    func addCategory(categoryTitle: String) {
+        do {
+            try trackerCategoryStore.addTrackerCategory(categoryTitle)
+        } catch {
+            print("Failed to get category: \(error)")
+        }
+    }
+    
+    func getCategoryNames() -> [String] {
+        do {
+            let result = try trackerCategoryStore.getTrackerCategoryNames()
+            return result
+        } catch {
+            print("Failed to get categories: \(error)")
+            return []
+        }
+    }
+}
+
 // MARK: - DataProviderProtocol
 extension DataProvider: DataProviderProtocol {
     var numberOfSections: Int {
@@ -171,7 +194,7 @@ extension DataProvider: DataProviderProtocol {
     }
 
     func addRecord(_ record: Tracker) throws {
-        trackerStore.addNewTracker(tracker: record, categoryName: "Новые")
+        trackerStore.addNewTracker(tracker: record)
     }
 }
 

@@ -27,7 +27,7 @@ final class TrackerCreationViewController: UIViewController {
     ]
     
     private var trackerName: String = ""
-    private var category: TrackerCategory = TrackerCategory(title: "Новые", trackers: [])
+    private var category: String = ""
     private var schedule: [Weekday] = []
     private var selectedEmoji: IndexPath? = nil
     private var selectedColor: IndexPath? = nil
@@ -39,7 +39,7 @@ final class TrackerCreationViewController: UIViewController {
         self.onCreateTracker = onCreateTracker
         self.isRegular = isRegular
         
-        self.tableOptions.append(tableOption(title: "Категория", subtitle: category.title, vc: TrackerTypeSelectionViewController.self))
+        self.tableOptions.append(tableOption(title: "Категория", vc: TrackerTypeSelectionViewController.self))
         if isRegular {
             // если событие регулярное (привычка), то добавляем в меню пункт "Расписание"
             self.tableOptions.append(tableOption(title: "Расписание", vc: ScheduleViewController.self))
@@ -188,18 +188,31 @@ final class TrackerCreationViewController: UIViewController {
     private func onUpdateSchedule(_ schedule: [Weekday]) {
         self.schedule = schedule
         if schedule.count == 7 {
-            self.tableOptions[1].subtitle = "Каждый день"
+            tableOptions[1].subtitle = "Каждый день"
         } else {
-            self.tableOptions[1].subtitle = schedule.map { weekdaysText[$0.rawValue]}.joined(separator: ", ")
+            tableOptions[1].subtitle = schedule.map { weekdaysText[$0.rawValue]}.joined(separator: ", ")
         }
-        self.tableView.reloadData()
-        self.updateCreateButtonState()
+        tableView.reloadData()
+        updateCreateButtonState()
+    }
+    
+    private func onUpdateCategory(_ category: String) {
+        self.category = category
+        tableOptions[0].subtitle = category
+        
+        tableView.reloadData()
+        updateCreateButtonState()
+    }
+    
+    private func onAddNewCategory(_ category: String) {
+        //
     }
     
     // блокирует/разблокирует кнопку "Создать"
     private func updateCreateButtonState() {
         createButtonView.isEnabled =
             !self.trackerName.isEmpty &&
+            !self.category.isEmpty &&
             (!self.schedule.isEmpty || !isRegular) &&
             self.selectedColor != nil &&
             self.selectedEmoji != nil
@@ -231,8 +244,8 @@ final class TrackerCreationViewController: UIViewController {
         else { return }
         
         self.onCreateTracker(
-            Tracker(id: "", name: self.trackerName, color: trackerColor, emoji: trackerEmoji, schedule: self.schedule),
-            self.category.title
+            Tracker(id: "", name: self.trackerName, color: trackerColor, emoji: trackerEmoji, schedule: self.schedule, category: self.category),
+            self.category
         )
         
         // возвращаемся на экран со списком трекеров
@@ -264,6 +277,10 @@ extension TrackerCreationViewController: UITableViewDelegate {
         let selected = self.tableOptions[indexPath.row].title
         if selected == "Категория" {
             // переход в выбор категории
+            navigationController?.pushViewController(
+                CategoryViewController(selectedCategory: self.category, updateCategory: self.onUpdateCategory),
+                animated: true
+            )
         } else if selected == "Расписание" {
             // переход в выбор расписания
             navigationController?.pushViewController(

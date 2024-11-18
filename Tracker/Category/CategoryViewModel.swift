@@ -30,8 +30,8 @@ final class CategoryViewModel {
         updateCategories?(categories)
     }
     
-    func pickCategory(_ category: String) {
-        returnCategory?(category)
+    func pickCategory(_ categoryId: Int) {
+        returnCategory?(categories[categoryId])
     }
 }
 

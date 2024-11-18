@@ -3,7 +3,6 @@ import UIKit
 
 final class CategoryViewController: UIViewController {
     
-    private var categories: [String] = []
     private var selectedCategory: String
     
     private var vm = CategoryViewModel()
@@ -24,8 +23,7 @@ final class CategoryViewController: UIViewController {
             returnCategory(category)
         }
         
-        vm.updateCategories = { [weak self] categories in
-            self?.categories = categories
+        vm.updateCategories = { [weak self] _ in
             self?.tableView.reloadData()
         }
     }
@@ -111,22 +109,22 @@ final class CategoryViewController: UIViewController {
 // TableViewDataSource Protocol
 extension CategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if (categories.count == 0) {
+        if (vm.categories.count == 0) {
             setBGViewToTable(imageName: "trackers-placeholder", text: "Привычки и события можно объединить по смыслу")
         } else {
             tableView.backgroundView = nil
         }
     
-        return categories.count
+        return vm.categories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CategoryTableCell
-        cell.textLabel?.text = categories[indexPath.row]
+        cell.textLabel?.text = vm.categories[indexPath.row]
         
         let accessoryView = UILabel(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
         accessoryView.font = .systemFont(ofSize: 20, weight: .medium)
-        accessoryView.text = categories[indexPath.row] == selectedCategory ? "✓" : ""
+        accessoryView.text = vm.categories[indexPath.row] == selectedCategory ? "✓" : ""
         accessoryView.textColor = .ypBlue
         cell.accessoryView = accessoryView
         
@@ -137,7 +135,7 @@ extension CategoryViewController: UITableViewDataSource {
 // TableViewDelegate Protocol
 extension CategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        vm.pickCategory(categories[indexPath.row])
+        vm.pickCategory(indexPath.row)
         navigationController?.popViewController(animated: true)
     }
     
@@ -183,6 +181,6 @@ extension CategoryViewController {
 
 extension CategoryViewController: DataProviderDelegate {
     func didUpdate(_ update: TrackerStoreUpdate) {
-//        tableView.reloadData()
+        // stub
     }
 }

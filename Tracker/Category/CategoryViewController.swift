@@ -5,27 +5,29 @@ final class CategoryViewController: UIViewController {
     
     private var categories: [String] = []
     private var selectedCategory: String
-    private var updateCategory: ((String) -> Void)
     
-    private lazy var dataProvider: DataProviderProtocol? = {
-        do {
-            try dataProvider = DataProvider(delegate: self)
-            return dataProvider
-        } catch {
-            print("Данные недоступны.")
-            return nil
-        }
-    }()
+    private var vm = CategoryViewModel()
     
     required init?(coder aDecoder: NSCoder) {
         fatalError()
     }
     
-    init(selectedCategory: String, updateCategory: @escaping ((String) -> Void)) {
+    init(selectedCategory: String, returnCategory: @escaping ((String) -> Void)) {
         self.selectedCategory = selectedCategory
-        self.updateCategory = updateCategory
         
         super.init(nibName: nil, bundle: nil)
+        bind(returnCategory)
+    }
+    
+    private func bind(_ returnCategory: @escaping ((String) -> Void)) {
+        vm.returnCategory = { category in
+            returnCategory(category)
+        }
+        
+        vm.updateCategories = { [weak self] categories in
+            self?.categories = categories
+            self?.tableView.reloadData()
+        }
     }
     
     private lazy var scrollView: UIScrollView = {
@@ -70,7 +72,7 @@ final class CategoryViewController: UIViewController {
         navigationItem.hidesBackButton = true
         view.backgroundColor = .white
         
-        categories = dataProvider?.getCategoryNames() ?? []
+        vm.getCategories()
         
         mainStackView.addArrangedSubview(tableView)
         
@@ -98,15 +100,9 @@ final class CategoryViewController: UIViewController {
         ])
     }
     
-    func onUpdateCategories(_ newCategory: String) {
-        categories.append(newCategory)
-        dataProvider?.addCategory(categoryTitle: newCategory)
-        tableView.reloadData()
-    }
-    
     @objc func newCategoryButtonTapped() {
         navigationController?.pushViewController(
-            NewCategoryViewController(updateCategories: onUpdateCategories),
+            NewCategoryViewController(updateCategories: vm.addNewCategory),
             animated: true
         )
     }
@@ -141,7 +137,7 @@ extension CategoryViewController: UITableViewDataSource {
 // TableViewDelegate Protocol
 extension CategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        updateCategory(categories[indexPath.row])
+        vm.pickCategory(categories[indexPath.row])
         navigationController?.popViewController(animated: true)
     }
     
@@ -187,6 +183,6 @@ extension CategoryViewController {
 
 extension CategoryViewController: DataProviderDelegate {
     func didUpdate(_ update: TrackerStoreUpdate) {
-        tableView.reloadData()
+//        tableView.reloadData()
     }
 }

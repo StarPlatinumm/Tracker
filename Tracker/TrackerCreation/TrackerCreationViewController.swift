@@ -196,7 +196,7 @@ final class TrackerCreationViewController: UIViewController {
         updateCreateButtonState()
     }
     
-    private func onUpdateCategory(_ category: String) {
+    private func onReturnCategory(_ category: String) {
         self.category = category
         tableOptions[0].subtitle = category
         
@@ -278,7 +278,7 @@ extension TrackerCreationViewController: UITableViewDelegate {
         if selected == "Категория" {
             // переход в выбор категории
             navigationController?.pushViewController(
-                CategoryViewController(selectedCategory: self.category, updateCategory: self.onUpdateCategory),
+                CategoryViewController(selectedCategory: self.category, returnCategory: self.onReturnCategory),
                 animated: true
             )
         } else if selected == "Расписание" {

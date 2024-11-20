@@ -98,7 +98,7 @@ final class CategoryViewController: UIViewController {
         ])
     }
     
-    @objc func newCategoryButtonTapped() {
+    @objc private func newCategoryButtonTapped() {
         navigationController?.pushViewController(
             NewCategoryViewController(updateCategories: vm.addNewCategory),
             animated: true

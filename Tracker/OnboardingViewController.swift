@@ -1,8 +1,8 @@
 import UIKit
 
-class OnboardingViewController: UIPageViewController {
+final class OnboardingViewController: UIPageViewController {
     
-    lazy var continueButton: UIButton = {
+    lazy private var continueButton: UIButton = {
         let button = UIButton()
         button.setTitle("Вот это технологии!", for: .normal)
         button.backgroundColor = .ypBlack
@@ -46,14 +46,14 @@ class OnboardingViewController: UIPageViewController {
         return page
     }
     
-    lazy var pages: [UIViewController] = {
+    lazy private var pages: [UIViewController] = {
         return [
             getPage(backgroundImageName: "onboarding_page_1", labelText: "Отслеживайте только то, что хотите"),
             getPage(backgroundImageName: "onboarding_page_2", labelText: "Даже если это не литры воды и йога")
         ]
     }()
     
-    lazy var pageControl: UIPageControl = {
+    lazy private var pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.numberOfPages = pages.count
         pageControl.currentPage = 0
@@ -90,7 +90,7 @@ class OnboardingViewController: UIPageViewController {
         ])
     }
     
-    @objc func continueButtonTapped() {
+    @objc private func continueButtonTapped() {
         UserSettings.shared.hasSeenOnboarding = true
         
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,

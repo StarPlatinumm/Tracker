@@ -265,14 +265,7 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
     
     // размер хедера
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        
-        let indexPath = IndexPath(row: 0, section: section)
-        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
-        
-        return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width,
-                                                         height: UIView.layoutFittingExpandedSize.height),
-                                                  withHorizontalFittingPriority: .required,
-                                                  verticalFittingPriority: .fittingSizeLevel)
+        return CGSize(width: collectionView.frame.width, height: 24)
     }
 }
 

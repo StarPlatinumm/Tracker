@@ -358,16 +358,9 @@ extension TrackerCreationViewController: UICollectionViewDataSource, UICollectio
         UIEdgeInsets(top: 24, left: collectionParams.leftInset, bottom: 24, right: collectionParams.rightInset)
     }
     
-    // для хедера
+    // размер хедера
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        
-        let indexPath = IndexPath(row: 0, section: section)
-        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
-        
-        return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width,
-                                                         height: UIView.layoutFittingExpandedSize.height),
-                                                  withHorizontalFittingPriority: .required,
-                                                  verticalFittingPriority: .fittingSizeLevel)
+        return CGSize(width: collectionView.frame.width, height: 24)
     }
     
     // для хедера

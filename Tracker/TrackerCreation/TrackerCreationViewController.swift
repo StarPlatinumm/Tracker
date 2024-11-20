@@ -180,7 +180,7 @@ final class TrackerCreationViewController: UIViewController {
             
             nameTextField.heightAnchor.constraint(equalToConstant: 75),
             tableView.heightAnchor.constraint(equalToConstant: self.isRegular ? 151 : 76),
-            emojiAndColorCollection.heightAnchor.constraint(equalToConstant: 460),
+            emojiAndColorCollection.heightAnchor.constraint(equalToConstant: 470),
             buttonsStackView.heightAnchor.constraint(equalToConstant: 60),
         ])
     }

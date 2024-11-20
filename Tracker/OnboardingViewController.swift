@@ -91,7 +91,7 @@ class OnboardingViewController: UIPageViewController {
     }
     
     @objc func continueButtonTapped() {
-        UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
+        UserSettings.shared.hasSeenOnboarding = true
         
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
         let window = appDelegate.window else { return }

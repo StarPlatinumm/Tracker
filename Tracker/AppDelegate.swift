@@ -7,7 +7,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow()
         
-        if UserDefaults.standard.bool(forKey: "hasSeenOnboarding") {
+        if UserSettings.shared.hasSeenOnboarding {
             window?.rootViewController = TabBarViewController()
         } else {
             window?.rootViewController = OnboardingViewController(transitionStyle: .scroll, navigationOrientation: .horizontal) as UIPageViewController

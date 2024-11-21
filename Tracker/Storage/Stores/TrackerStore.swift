@@ -13,9 +13,9 @@ final class TrackerStore {
         return NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
     }
     
-    func addNewTracker(tracker: Tracker, categoryName: String) {
+    func addNewTracker(tracker: Tracker) {
         let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
-        fetchRequest.predicate = NSPredicate(format: "title == %@", categoryName)
+        fetchRequest.predicate = NSPredicate(format: "title == %@", tracker.category)
         var categories: [TrackerCategoryCoreData] = []
         do {
             categories = try context.fetch(fetchRequest)
@@ -28,7 +28,7 @@ final class TrackerStore {
             category = existingCategory
         } else {
             category = TrackerCategoryCoreData(context: context)
-            category.title = categoryName
+            category.title = tracker.category
         }
         
         let trackerForDB = TrackerCoreData(context: context)
@@ -50,7 +50,8 @@ final class TrackerStore {
         guard let trackerTitle = TrackerCoreData.name,
               let trackerColorString = TrackerCoreData.color,
               let trackerScheduleString = TrackerCoreData.schedule,
-              let trackerEmoji = TrackerCoreData.emoji
+              let trackerEmoji = TrackerCoreData.emoji,
+              let trackerCategory = TrackerCoreData.category?.title
         else {
             return nil
         }
@@ -58,7 +59,14 @@ final class TrackerStore {
         let trackerColor = uiColorMarshalling.color(from: trackerColorString)
         let trackerSchedule = ScheduleTransformer().toWeekdays(trackerScheduleString)
         
-        let tracker = Tracker(id: TrackerCoreData.objectID.uriRepresentation().absoluteString, name: trackerTitle, color: trackerColor, emoji: trackerEmoji, schedule: trackerSchedule)
+        let tracker = Tracker(
+            id: TrackerCoreData.objectID.uriRepresentation().absoluteString,
+            name: trackerTitle,
+            color: trackerColor,
+            emoji: trackerEmoji,
+            schedule: trackerSchedule,
+            category: trackerCategory
+        )
         return tracker
     }
     

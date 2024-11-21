@@ -257,21 +257,15 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
         
         let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! SupplementaryView
         // текст заголовка
-        view.titleLabel.text = "Новые" // TODO:
+        guard let tracker = dataProvider?.object(at: indexPath) else { return view }
+        view.titleLabel.text = tracker.category
         view.titleLabel.font = .systemFont(ofSize: 19, weight: .bold)
         return view
     }
     
     // размер хедера
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        
-        let indexPath = IndexPath(row: 0, section: section)
-        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
-        
-        return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width,
-                                                         height: UIView.layoutFittingExpandedSize.height),
-                                                  withHorizontalFittingPriority: .required,
-                                                  verticalFittingPriority: .fittingSizeLevel)
+        return CGSize(width: collectionView.frame.width, height: 24)
     }
 }
 

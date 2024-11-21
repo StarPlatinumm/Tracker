@@ -9,14 +9,28 @@ final class TrackerCategoryStore {
         self.context = context
     }
     
-    func add(_ trackerCategory: TrackerCategory) throws {
-        let managedRecord = TrackerCategoryCoreData(context: context)
-        managedRecord.title = trackerCategory.title
+    private func fetchRequest() -> NSFetchRequest<TrackerCategoryCoreData> {
+        return NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+    }
+    
+    func addTrackerCategory(_ categoryTitle: String) throws {
+        let category = TrackerCategoryCoreData(context: context)
+        category.title = categoryTitle
         try context.save()
     }
     
-    func delete(_ tracker: NSManagedObject) throws {
-        context.delete(tracker)
-        try context.save()
+    func getTrackerCategoryNames() throws -> [String] {
+        let fetchRequest = fetchRequest()
+        
+        var trackerCategories: [String] = []
+        var trackerCategoryCoreData: [TrackerCategoryCoreData] = []
+
+        trackerCategoryCoreData = try context.fetch(fetchRequest)
+        for category in trackerCategoryCoreData {
+            if let categoryTitle = category.title {
+                trackerCategories.append(categoryTitle)
+            }
+        }
+        return trackerCategories
     }
 }

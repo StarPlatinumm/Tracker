@@ -14,7 +14,6 @@ final class TrackersViewController: UIViewController {
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .compact
-        datePicker.locale = Locale(identifier: "ru_RU")
         datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
         return datePicker
     }()
@@ -129,14 +128,10 @@ final class TrackersViewController: UIViewController {
         }
         
         let days = dataProvider?.getTrackerRecords(by: tracker.id).count ?? 0
-        
-        if days % 10 == 1 && days % 100 != 11 {
-            return "\(days) день"
-        } else if (days % 10 == 2 || days % 10 == 3 || days % 10 == 4) && (days % 100 < 10 || days % 100 > 20) {
-            return "\(days) дня"
-        } else {
-            return "\(days) дней"
-        }
+        return String.localizedStringWithFormat(
+            NSLocalizedString("daysTracked", comment: "Number of days tracked"),
+            days
+        )
     }
     
     // добавляет новый трекер в коллекцию

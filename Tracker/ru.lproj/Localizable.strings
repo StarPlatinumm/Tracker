@@ -17,6 +17,7 @@
 "trackers.searchBar.placeholder" = "Поиск";
 "trackers.emptyTrackers" = "Что будем отслеживать?";
 "trackers.noTrackersFound" = "Ничего не найдено";
+"trackers.filters" = "Фильтры";
 
 "trackerTypeSelection.title" = "Создание трекера";
 "trackerTypeSelection.regular" = "Привычка";

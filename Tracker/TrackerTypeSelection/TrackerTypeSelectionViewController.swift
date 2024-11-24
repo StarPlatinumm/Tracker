@@ -19,11 +19,11 @@ final class TrackerTypeSelectionViewController: UIViewController {
         
         view.backgroundColor = .ypWhite
         
-        self.title = "Создание трекера"
+        self.title = NSLocalizedString("trackerTypeSelection.title", comment: "Создание трекера")
         
-        let regularEventButton = getButton("Привычка")
+        let regularEventButton = getButton(NSLocalizedString("trackerTypeSelection.regular", comment: "Привычка"))
         regularEventButton.addTarget(self, action: #selector(opencCreateTrackerWithSchedule), for: .touchUpInside)
-        let irregularEventButton = getButton("Нерегулярное событие")
+        let irregularEventButton = getButton(NSLocalizedString("trackerTypeSelection.irregular", comment: "Нерегулярное событие"))
         irregularEventButton.addTarget(self, action: #selector(opencCreateTrackerWOSchedule), for: .touchUpInside)
         
         view.addSubview(regularEventButton)

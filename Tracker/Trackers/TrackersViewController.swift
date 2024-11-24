@@ -20,7 +20,7 @@ final class TrackersViewController: UIViewController {
     
     private lazy var searchBarController: UISearchController = {
         let searchBarController = UISearchController(searchResultsController: nil)
-        searchBarController.searchBar.placeholder = "Поиск"
+        searchBarController.searchBar.placeholder = NSLocalizedString("trackers.searchBar.placeholder", comment: "Поиск")
         searchBarController.searchBar.delegate = self
         return searchBarController
     }()
@@ -49,22 +49,6 @@ final class TrackersViewController: UIViewController {
         return collection
     }()
     
-    private lazy var emptyTrackersImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "trackers-placeholder")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
-    
-    private lazy var emptyTrackersTextLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Что будем отслеживать?"
-        label.font = UIFont.systemFont(ofSize: 12)
-        label.textColor = .ypBlack
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
     private var currentDate = Date()
     private var filterValue: String = ""
     private let collectionParams = GeometricParams(cellCount: 2, leftInset: 0, rightInset: 0, cellSpacing: 9)
@@ -82,7 +66,7 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = "Трекеры"
+        navigationItem.title = NSLocalizedString("trackers.title", comment: "Трекеры")
         navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.leftBarButtonItem = addButton
@@ -166,9 +150,17 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
         if (sectionsCount == 0) {
             let totalTrackersCount = dataProvider?.getTrackers().count ?? 0
             if (totalTrackersCount == 0) {
-                setBGViewToCollection(trackersCollection, imageName: "trackers-placeholder", text: "Что будем отслеживать?")
+                setBGViewToCollection(
+                    trackersCollection,
+                    imageName: "trackers-placeholder",
+                    text: NSLocalizedString("trackers.emptyTrackers", comment: "Что будем отслеживать?")
+                )
             } else {
-                setBGViewToCollection(trackersCollection, imageName: "no-trackers-found", text: "Ничего не найдено")
+                setBGViewToCollection(
+                    trackersCollection,
+                    imageName: "no-trackers-found",
+                    text: NSLocalizedString("trackers.noTrackersFound", comment: "Ничего не найдено")
+                )
             }
         } else {
             trackersCollection.backgroundView = nil

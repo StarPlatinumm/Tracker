@@ -19,7 +19,7 @@ final class NewCategoryViewController: UIViewController {
     
     private lazy var nameTextField: UITextField = {
         let textField = TextFieldWithPadding()
-        textField.placeholder = "Введите название категории"
+        textField.placeholder = NSLocalizedString("newCategory.nameTextField.placeholder", comment: "Введите название категории")
         textField.font = UIFont.systemFont(ofSize: 17)
         textField.layer.cornerRadius = 16
         textField.backgroundColor = .ypLightGray
@@ -31,7 +31,7 @@ final class NewCategoryViewController: UIViewController {
     
     private lazy var longNameWarningLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ограничение 24 символа"
+        label.text = NSLocalizedString("newCategory.nameTextField.maxLen", comment: "Ограничение 24 символа")
         label.font = UIFont.systemFont(ofSize: 17)
         label.textAlignment = .center
         label.textColor = .ypRed
@@ -42,7 +42,7 @@ final class NewCategoryViewController: UIViewController {
     
     private lazy var doneButtonView: UIButton = {
         let button = CustomButton(type: .custom)
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(NSLocalizedString("newCategory.doneButton.text", comment: "Готово"), for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 16
         button.setBackgroundColor(.ypBlack, for: .normal)
@@ -56,7 +56,7 @@ final class NewCategoryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Новая категория"
+        self.title = NSLocalizedString("newCategory.title", comment: "Новая категория")
         navigationItem.hidesBackButton = true
         view.backgroundColor = .white
         

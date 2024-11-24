@@ -17,6 +17,7 @@
 		6F52C1142CB963FF00BC93BE /* ScheduleTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F52C1132CB963FF00BC93BE /* ScheduleTableCell.swift */; };
 		6F5BE4732CEE404A002814B0 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5BE4722CEE404A002814B0 /* UserSettings.swift */; };
 		6F5BE4762CF340FB002814B0 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 6F5BE4742CF340FB002814B0 /* Localizable.stringsdict */; };
+		6F5BE47A2CF34BA1002814B0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6F5BE4782CF34BA1002814B0 /* Localizable.strings */; };
 		6F851E772CCC000000892F6E /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F851E762CCC000000892F6E /* TrackerStore.swift */; };
 		6F851E792CCC001700892F6E /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F851E782CCC001700892F6E /* TrackerRecordStore.swift */; };
 		6F851E7B2CCC002200892F6E /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F851E7A2CCC002200892F6E /* TrackerCategoryStore.swift */; };
@@ -54,6 +55,7 @@
 		6F5BE4722CEE404A002814B0 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		6F5BE4752CF340FB002814B0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		6F5BE4772CF34442002814B0 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		6F5BE4792CF34BA1002814B0 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		6F851E762CCC000000892F6E /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
 		6F851E782CCC001700892F6E /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
 		6F851E7A2CCC002200892F6E /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
@@ -204,6 +206,7 @@
 				6FD0BFD82C56614A007086E7 /* Assets.xcassets */,
 				6FD0BFDA2C56614A007086E7 /* LaunchScreen.storyboard */,
 				6FD0BFDD2C56614A007086E7 /* Info.plist */,
+				6F5BE4782CF34BA1002814B0 /* Localizable.strings */,
 				6F5BE4742CF340FB002814B0 /* Localizable.stringsdict */,
 			);
 			path = Tracker;
@@ -289,6 +292,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6FD0BFD92C56614A007086E7 /* Assets.xcassets in Resources */,
+				6F5BE47A2CF34BA1002814B0 /* Localizable.strings in Resources */,
 				6FD0BFDC2C56614A007086E7 /* Base in Resources */,
 				6F5BE4762CF340FB002814B0 /* Localizable.stringsdict in Resources */,
 			);
@@ -344,6 +348,14 @@
 				6F5BE4772CF34442002814B0 /* ru */,
 			);
 			name = Localizable.stringsdict;
+			sourceTree = "<group>";
+		};
+		6F5BE4782CF34BA1002814B0 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6F5BE4792CF34BA1002814B0 /* ru */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 		6FD0BFDA2C56614A007086E7 /* LaunchScreen.storyboard */ = {

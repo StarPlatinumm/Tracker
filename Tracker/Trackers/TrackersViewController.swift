@@ -360,7 +360,8 @@ extension TrackersViewController: UICollectionViewDelegate {
         present(UINavigationController(rootViewController: TrackerCreationViewController(
             onCreateTracker: self.editTracker,
             isRegular: !tracker.schedule.isEmpty,
-            initialValues: tracker
+            initialValues: tracker,
+            daysTrackedLabelText: getTrackerDaysLabelText(for: tracker)
         )), animated: true)
     }
     func removeTrackerAction(_ tracker: Tracker) {

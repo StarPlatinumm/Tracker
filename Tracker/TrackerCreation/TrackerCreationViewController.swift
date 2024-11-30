@@ -34,6 +34,7 @@ final class TrackerCreationViewController: UIViewController {
     private var selectedEmoji: IndexPath? = nil
     private var selectedColor: IndexPath? = nil
     private var tableOptions: [tableOption] = []
+    private var daysTrackedLabelText: String = ""
     private var initialValues: Tracker? = nil
     
     private let weekdaysText = [
@@ -46,10 +47,11 @@ final class TrackerCreationViewController: UIViewController {
         NSLocalizedString("trackerCreation.weekdays.sun", comment: "Вс")
     ]
     
-    init(onCreateTracker: @escaping (Tracker) -> Void, isRegular: Bool, initialValues: Tracker? = nil) {
+    init(onCreateTracker: @escaping (Tracker) -> Void, isRegular: Bool, initialValues: Tracker? = nil, daysTrackedLabelText: String = "") {
         self.onCreateTracker = onCreateTracker
         self.isRegular = isRegular
         self.initialValues = initialValues
+        self.daysTrackedLabelText = daysTrackedLabelText
         
         self.tableOptions.append(tableOption(title: NSLocalizedString("trackerCreation.category", comment: "Категория"), vc: TrackerTypeSelectionViewController.self))
         if isRegular {
@@ -76,6 +78,16 @@ final class TrackerCreationViewController: UIViewController {
         stackView.spacing = 24
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
+    }()
+    
+    private lazy var daysTrackedLabel: UILabel = {
+        let label = UILabel()
+        label.text = daysTrackedLabelText
+        label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+        label.textAlignment = .center
+        label.isHidden = daysTrackedLabelText.isEmpty
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
     
     private lazy var nameTextField: UITextField = {
@@ -172,6 +184,8 @@ final class TrackerCreationViewController: UIViewController {
             onReturnCategory(category)
             onUpdateSchedule(schedule)
         }
+        
+        mainStackView.addArrangedSubview(daysTrackedLabel)
         
         // название трекера
         let nameStackView = UIStackView(arrangedSubviews: [nameTextField, longNameWarningLabel])

@@ -58,6 +58,7 @@ final class TrackerStore {
         
         let trackerColor = uiColorMarshalling.color(from: trackerColorString)
         let trackerSchedule = ScheduleTransformer().toWeekdays(trackerScheduleString)
+        let trackerIsPinned = TrackerCoreData.isPinned
         
         let tracker = Tracker(
             id: TrackerCoreData.objectID.uriRepresentation().absoluteString,
@@ -65,14 +66,16 @@ final class TrackerStore {
             color: trackerColor,
             emoji: trackerEmoji,
             schedule: trackerSchedule,
-            category: trackerCategory
+            category: trackerCategory,
+            isPinned: trackerIsPinned
         )
         return tracker
     }
     
-    func getTrackers() throws -> [Tracker] {
+    func getTrackers(predicate: NSPredicate? = nil) throws -> [Tracker] {
         var trackersArray: [Tracker] = []
         let request = fetchRequest()
+        request.predicate = predicate
         let trackersFromDB = try context.fetch(request)
         for i in trackersFromDB {
             if let newTracker = createTracker(from: i) {
@@ -84,9 +87,22 @@ final class TrackerStore {
         return trackersArray
     }
     
+    func getPinnedTrackers() throws -> [Tracker] {
+        return try getTrackers(predicate: NSPredicate(format: "isPinned == true"))
+    }
+    
     func getTrackersCD() throws -> [TrackerCoreData] {
         let request = fetchRequest()
         let trackersFromDB = try context.fetch(request)
         return trackersFromDB
+    }
+    
+    func pinTracker(_ trackerID: String, value: Bool) throws {
+        if let objectID = context.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: URL(string: trackerID)!) {
+            if let item = try? context.existingObject(with: objectID) as? TrackerCoreData {
+                item.isPinned = value
+                try context.save()
+            }
+        }
     }
 }

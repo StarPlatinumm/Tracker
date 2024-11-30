@@ -8,6 +8,7 @@ struct Tracker {
     let emoji: String
     let schedule: [Weekday]
     let category: String
+    let isPinned: Bool
 }
 
 enum Weekday: Int, Codable {

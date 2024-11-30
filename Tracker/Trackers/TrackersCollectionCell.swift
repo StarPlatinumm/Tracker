@@ -24,6 +24,13 @@ final class TrackerCollectionCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
+    lazy var pinImage: UIImageView = {
+        let imageView = UIImageView(image: UIImage(systemName: "pin.fill"))
+        imageView.tintColor = .ypWhite
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
 
     lazy var textLabel: UILabel = {
         let label = UILabel()
@@ -59,6 +66,7 @@ final class TrackerCollectionCell: UICollectionViewCell {
         contentView.addSubview(cardView)
         cardView.addSubview(emojiLabel)
         cardView.addSubview(textLabel)
+        cardView.addSubview(pinImage)
         contentView.addSubview(infoLabel)
         contentView.addSubview(addButton)
 
@@ -72,6 +80,11 @@ final class TrackerCollectionCell: UICollectionViewCell {
             emojiLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 12),
             emojiLabel.widthAnchor.constraint(equalToConstant: 24),
             emojiLabel.heightAnchor.constraint(equalToConstant: 24),
+            
+            pinImage.topAnchor.constraint(equalTo: emojiLabel.topAnchor, constant: 6),
+            pinImage.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -12),
+            pinImage.widthAnchor.constraint(equalToConstant: 12),
+            pinImage.heightAnchor.constraint(equalToConstant: 12),
             
             textLabel.topAnchor.constraint(equalTo: emojiLabel.bottomAnchor, constant: 8),
             textLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 12),

@@ -4,7 +4,7 @@ final class OnboardingViewController: UIPageViewController {
     
     lazy private var continueButton: UIButton = {
         let button = UIButton()
-        button.setTitle(NSLocalizedString("onboarding.page1.text", comment: "Вот это технологии!"), for: .normal)
+        button.setTitle(NSLocalizedString("onboarding.button.text", comment: "Вот это технологии!"), for: .normal)
         button.backgroundColor = .ypBlack
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false

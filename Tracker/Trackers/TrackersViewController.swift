@@ -177,10 +177,18 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
     
     // настройка ячейки
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let tracker = dataProvider?.object(at: indexPath) else { return UICollectionViewCell() }
+        var tracker: Tracker?
+        if indexPath.section == 0 {
+            tracker = dataProvider?.getPinnedTrackers()[indexPath.item]
+        } else {
+            tracker = dataProvider?.object(at: indexPath)
+        }
+        
+        guard let tracker else { return UICollectionViewCell() }
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerCollectionCell.identifier, for: indexPath) as! TrackerCollectionCell
         
         cell.emojiLabel.text = tracker.emoji
+        cell.pinImage.isHidden = !tracker.isPinned
         cell.textLabel.text = tracker.name
         cell.infoLabel.text = getTrackerDaysLabelText(for: tracker)
         cell.cardView.backgroundColor = tracker.color
@@ -244,14 +252,21 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
         
         let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! SupplementaryView
         // текст заголовка
-        guard let tracker = dataProvider?.object(at: indexPath) else { return view }
-        view.titleLabel.text = tracker.category
+        if indexPath.section == 0 {
+            view.titleLabel.text = "Закрепленные"
+        } else {
+            guard let tracker = dataProvider?.object(at: IndexPath(item: 0, section: indexPath.section)) else { return view }
+            view.titleLabel.text = tracker.category
+        }
         view.titleLabel.font = .systemFont(ofSize: 19, weight: .bold)
         return view
     }
     
     // размер хедера
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        if dataProvider?.numberOfItemsInSection(section) == 0 {
+            return CGSize(width: collectionView.frame.width, height: 0)
+        }
         return CGSize(width: collectionView.frame.width, height: 24)
     }
 }
@@ -277,7 +292,7 @@ extension TrackersViewController {
         let imageView = UIImageView()
         imageView.image = UIImage(named: imageName)
         imageView.translatesAutoresizingMaskIntoConstraints = false
-
+        
         let label = UILabel()
         label.text = text
         label.font = UIFont.systemFont(ofSize: 12)
@@ -304,5 +319,56 @@ extension TrackersViewController {
 extension TrackersViewController: DataProviderDelegate {
     func didUpdate(_ update: TrackerStoreUpdate) {
         trackersCollection.reloadData()
+    }
+}
+
+extension TrackersViewController: UICollectionViewDelegate {
+    // контекстное меню
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPaths: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        var tracker: Tracker?
+        if indexPaths.section == 0 {
+            tracker = dataProvider?.getPinnedTrackers()[indexPaths.item]
+        } else {
+            tracker = dataProvider?.object(at: indexPaths)
+        }
+        
+        guard let tracker else { return nil }
+        let indexPathStr = NSString(string: "\(indexPaths.item), \(indexPaths.section)")
+        
+        return UIContextMenuConfiguration(identifier: indexPathStr, actionProvider: { actions in
+            return UIMenu(children: [
+                UIAction(title: tracker.isPinned ? "Открепить" : "Закрепить") { [weak self] _ in
+                    self?.togglePinTracker(tracker)
+                },
+                UIAction(title: "Редактировать") { [weak self] _ in
+                    self?.editTracker(tracker)
+                },
+                UIAction(title: "Удалить") { [weak self] _ in
+                    self?.deleteTracker(tracker)
+                },
+            ])
+        })
+    }
+    
+    // настройка превью при выделении
+    func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+        
+        guard let identifier = configuration.identifier as? String,
+              let item = Int(identifier.components(separatedBy: ", ")[0]),
+              let section = Int(identifier.components(separatedBy: ", ")[1]),
+              let cell = collectionView.cellForItem(at: IndexPath(item: item, section: section)) as? TrackerCollectionCell
+        else { return nil }
+        
+        return UITargetedPreview(view: cell.cardView)
+    }
+    
+    func togglePinTracker(_ tracker: Tracker) {
+        dataProvider?.pinTracker(tracker.id, setTo: !tracker.isPinned)
+    }
+    func editTracker(_ tracker: Tracker) {
+        print("Редактировать")
+    }
+    func deleteTracker(_ tracker: Tracker) {
+        print("Удалить")
     }
 }

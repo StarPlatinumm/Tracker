@@ -17,6 +17,8 @@ protocol DataProviderProtocol {
     func addRecord(_ record: Tracker) throws
     
     func getTrackers() -> [Tracker]
+    func getPinnedTrackers() -> [Tracker]
+    func pinTracker(_ trackerID: String, setTo value: Bool)
     func filterTrackers(date: Date, filter: String)
     
     func addCategory(categoryTitle: String)
@@ -30,7 +32,7 @@ protocol DataProviderProtocol {
 
 // MARK: - DataProvider
 final class DataProvider: NSObject {
-
+    
     enum DataProviderError: Error {
         case failedToInitializeContext
     }
@@ -46,7 +48,7 @@ final class DataProvider: NSObject {
     
     // контроллер для обновления коллекции трекеров
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCoreData> = {
-
+        
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
         
@@ -94,9 +96,9 @@ final class DataProvider: NSObject {
             format: "name LIKE[c] %@ AND (schedule LIKE %@ OR ANY record.date = %@ OR (record.@count == 0 AND schedule == ''))",
             argumentArray: ["*\(filter)*", "*\(weekday)*", Calendar.current.startOfDay(for: date)]
         )
-
+        
         fetchedResultsController.fetchRequest.predicate = newPredicate
-
+        
         do {
             try fetchedResultsController.performFetch()
         } catch {
@@ -112,8 +114,26 @@ extension DataProvider {
             let result = try trackerStore.getTrackers()
             return result
         } catch {
-            print("Failed to get Trackers: \(error)")
+            print("Failed to get trackers: \(error)")
             return []
+        }
+    }
+    
+    func getPinnedTrackers() -> [Tracker] {
+        do {
+            let result = try trackerStore.getPinnedTrackers()
+            return result
+        } catch {
+            print("Failed to get pinned trackers: \(error)")
+            return []
+        }
+    }
+    
+    func pinTracker(_ trackerID: String, setTo value: Bool) {
+        do {
+            try trackerStore.pinTracker(trackerID, value: value)
+        } catch {
+            print("Failed to pin tracker: \(error)")
         }
     }
 }
@@ -181,18 +201,34 @@ extension DataProvider {
 // MARK: - DataProviderProtocol
 extension DataProvider: DataProviderProtocol {
     var numberOfSections: Int {
-        fetchedResultsController.sections?.count ?? 0
+        return (fetchedResultsController.sections?.count ?? 0) + 1
     }
     
     func numberOfItemsInSection(_ section: Int) -> Int {
-        fetchedResultsController.sections?[section].numberOfObjects ?? 0
+        if section == 0 {
+            // "закрепленные"
+            do {
+                let pinnedTrackers = try trackerStore.getPinnedTrackers()
+                return pinnedTrackers.count
+            } catch {
+                print("Failed to get pinned trackers: \(error)")
+                return 0
+            }
+        } else {
+            return fetchedResultsController.sections?[section - 1].numberOfObjects ?? 0
+        }
     }
     
     func object(at indexPath: IndexPath) -> Tracker? {
-        let trackerCoreData = fetchedResultsController.object(at: indexPath)
+//        print("indexPath.section = \(indexPath.section - 1), indexPath.item = \(indexPath.item)")
+//        let all = fetchedResultsController.fetchedObjects!
+//        for tracker in all {
+//            print(fetchedResultsController.indexPath(forObject: tracker))
+//        }
+        let trackerCoreData = fetchedResultsController.object(at: IndexPath(item: indexPath.item, section: indexPath.section - 1))
         return trackerStore.createTracker(from: trackerCoreData)
     }
-
+    
     func addRecord(_ record: Tracker) throws {
         trackerStore.addNewTracker(tracker: record)
     }
@@ -204,14 +240,14 @@ extension DataProvider: NSFetchedResultsControllerDelegate {
         insertedIndexes = IndexSet()
         deletedIndexes = IndexSet()
     }
-
+    
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         guard let insertedIndexes, let deletedIndexes else { return }
         
         delegate?.didUpdate(TrackerStoreUpdate(
-                insertedIndexes: insertedIndexes,
-                deletedIndexes: deletedIndexes
-            )
+            insertedIndexes: insertedIndexes,
+            deletedIndexes: deletedIndexes
+        )
         )
         self.insertedIndexes = nil
         self.deletedIndexes = nil

@@ -18,6 +18,7 @@ protocol DataProviderProtocol {
     
     func getTrackers() -> [Tracker]
     func pinTracker(_ trackerID: String, setTo value: Bool)
+    func editTracker(_ tracker: Tracker)
     func removeTracker(_ trackerID: String)
     func filterTrackers(date: Date, filter: String)
     
@@ -124,6 +125,14 @@ extension DataProvider {
             try trackerStore.pinTracker(trackerID, value: value)
         } catch {
             print("Failed to pin tracker: \(error)")
+        }
+    }
+    
+    func editTracker(_ tracker: Tracker) {
+        do {
+            try trackerStore.editTracker(tracker)
+        } catch {
+            print("Failed to edit tracker: \(error)")
         }
     }
     

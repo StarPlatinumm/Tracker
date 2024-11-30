@@ -104,6 +104,37 @@ final class TrackerStore {
         }
     }
     
+    func editTracker(_ tracker: Tracker) throws {
+        let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+        fetchRequest.predicate = NSPredicate(format: "title == %@", tracker.category)
+        var categories: [TrackerCategoryCoreData] = []
+        do {
+            categories = try context.fetch(fetchRequest)
+        } catch {
+            print("Failed to request categories")
+        }
+        
+        let category: TrackerCategoryCoreData
+        if let existingCategory = categories.first {
+            category = existingCategory
+        } else {
+            category = TrackerCategoryCoreData(context: context)
+            category.title = tracker.category
+        }
+
+        if let objectID = context.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: URL(string: tracker.id)!) {
+            if let item = try? context.existingObject(with: objectID) as? TrackerCoreData {
+                item.name = tracker.name
+                item.category = category
+                item.schedule = ScheduleTransformer().toString(tracker.schedule)
+                item.color = uiColorMarshalling.hexString(from: tracker.color)
+                item.emoji = tracker.emoji
+                
+                try context.save()
+            }
+        }
+    }
+    
     func removeTracker(_ trackerID: String) throws {
         if let objectID = context.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: URL(string: trackerID)!) {
             if let item = try? context.existingObject(with: objectID) as? TrackerCoreData {
@@ -117,9 +148,9 @@ final class TrackerStore {
 extension TrackerCoreData {
     @objc dynamic var computedCategory: String {
         if isPinned {
-            return "Закрепленные"
+            return NSLocalizedString("trackers.category.pinned", comment: "Закрепленные")
         } else {
-            return category?.title ?? "Uncategorized"
+            return category?.title ?? "---"
         }
     }
 }

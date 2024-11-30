@@ -25,6 +25,7 @@
 "trackers.contextMenu.remove.modal.title" = "Уверены, что хотите удалить трекер?";
 "trackers.contextMenu.remove.modal.ok" = "Удалить";
 "trackers.contextMenu.remove.modal.cance;" = "Отменить";
+"trackers.category.pinned" = "Закрепленные";
 
 "trackerTypeSelection.title" = "Создание трекера";
 "trackerTypeSelection.regular" = "Привычка";
@@ -45,8 +46,12 @@
 "trackerCreation.nameTextField.placeholder" = "Введите название трекера";
 "trackerCreation.nameTextField.maxLen" = "Ограничение 38 символов";
 "trackerCreation.createButton" = "Создать";
+"trackerCreation.saveButton" = "Сохранить";
 "trackerCreation.cancelButton" = "Отменить";
-"trackerCreation.title" = "Новая привычка";
+"trackerCreation.title.create.regular" = "Создание привычки";
+"trackerCreation.title.create.irregular" = "Создание события";
+"trackerCreation.title.edit.regular" = "Редактирование привычки";
+"trackerCreation.title.edit.irregular" = "Редактирование события";
 
 "schedule.weekdays.mon" = "Понедельник";
 "schedule.weekdays.tue" = "Вторник";

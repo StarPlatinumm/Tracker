@@ -25,6 +25,7 @@
 "trackers.contextMenu.remove.modal.title" = "Are you sure you want to remove this tracker?";
 "trackers.contextMenu.remove.modal.ok" = "Remove";
 "trackers.contextMenu.remove.modal.cancel" = "Cancel";
+"trackers.category.pinned" = "Pinned";
 
 "trackerTypeSelection.title" = "Create Tracker";
 "trackerTypeSelection.regular" = "Habit";
@@ -45,8 +46,12 @@
 "trackerCreation.nameTextField.placeholder" = "Enter tracker name";
 "trackerCreation.nameTextField.maxLen" = "Limit is 38 characters";
 "trackerCreation.createButton" = "Create";
+"trackerCreation.saveButton" = "Save";
 "trackerCreation.cancelButton" = "Cancel";
-"trackerCreation.title" = "New Habit";
+"trackerCreation.title.create.regular" = "New habit";
+"trackerCreation.title.create.irregular" = "New event";
+"trackerCreation.title.edit.regular" = "Edit habit";
+"trackerCreation.title.edit.irregular" = "Edit event";
 
 "schedule.weekdays.mon" = "Monday";
 "schedule.weekdays.tue" = "Tuesday";

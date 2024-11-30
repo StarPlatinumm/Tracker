@@ -3,9 +3,9 @@ import UIKit
 // экран выбора создания привычки или нерегулярного события
 final class TrackerTypeSelectionViewController: UIViewController {
     
-    private let onAddTracker: (Tracker, String) -> Void
+    private let onAddTracker: (Tracker) -> Void
     
-    init(onAddTracker: @escaping (Tracker, String) -> Void) {
+    init(onAddTracker: @escaping (Tracker) -> Void) {
         self.onAddTracker = onAddTracker
         super.init(nibName: nil, bundle: nil)
     }

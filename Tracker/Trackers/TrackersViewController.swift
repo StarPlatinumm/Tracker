@@ -119,9 +119,14 @@ final class TrackersViewController: UIViewController {
     }
     
     // добавляет новый трекер в коллекцию
-    private func addTracker(_ tracker: Tracker, categoryName: String) {
+    private func addTracker(_ tracker: Tracker) {
         searchBarController.searchBar.text = ""
         try? dataProvider?.addRecord(tracker)
+    }
+    
+    private func editTracker(_ tracker: Tracker) {
+        searchBarController.searchBar.text = ""
+        dataProvider?.editTracker(tracker)
     }
     
     func updateFilters() {
@@ -324,13 +329,13 @@ extension TrackersViewController: UICollectionViewDelegate {
         return UIContextMenuConfiguration(identifier: indexPathStr, actionProvider: { actions in
             return UIMenu(children: [
                 UIAction(title: pinActionTitle) { [weak self] _ in
-                    self?.togglePinTracker(tracker)
+                    self?.togglePinTrackerAction(tracker)
                 },
                 UIAction(title: editActionTitle) { [weak self] _ in
-                    self?.editTracker(tracker)
+                    self?.editTrackerAction(tracker)
                 },
                 UIAction(title: removeActionTitle, attributes: .destructive) { [weak self] _ in
-                    self?.removeTracker(tracker)
+                    self?.removeTrackerAction(tracker)
                 },
             ])
         })
@@ -348,13 +353,17 @@ extension TrackersViewController: UICollectionViewDelegate {
         return UITargetedPreview(view: cell.cardView)
     }
     
-    func togglePinTracker(_ tracker: Tracker) {
+    func togglePinTrackerAction(_ tracker: Tracker) {
         dataProvider?.pinTracker(tracker.id, setTo: !tracker.isPinned)
     }
-    func editTracker(_ tracker: Tracker) {
-        print("Редактировать")
+    func editTrackerAction(_ tracker: Tracker) {
+        present(UINavigationController(rootViewController: TrackerCreationViewController(
+            onCreateTracker: self.editTracker,
+            isRegular: !tracker.schedule.isEmpty,
+            initialValues: tracker
+        )), animated: true)
     }
-    func removeTracker(_ tracker: Tracker) {
+    func removeTrackerAction(_ tracker: Tracker) {
         let modalTitleText = NSLocalizedString("trackers.contextMenu.remove.modal.title", comment: "Уверены, что хотите удалить трекер?")
         let modalOkText = NSLocalizedString("trackers.contextMenu.remove.modal.ok", comment: "Удалить")
         let modalCancelText = NSLocalizedString("trackers.contextMenu.remove.modal.cancel", comment: "Отменить")

@@ -9,21 +9,23 @@ struct tableOption {
 
 struct CollectionSectionsContent {
     let title: String
-    let elements: [Any]
+    let elements: [String]
 }
 
 // экран создания нового трекера
 final class TrackerCreationViewController: UIViewController {
     
-    private let onCreateTracker: (Tracker, String) -> Void
+    private let onCreateTracker: (Tracker) -> Void
     private let isRegular: Bool
     
     private let collectionParams = GeometricParams(cellCount: 6, leftInset: 8, rightInset: 8, cellSpacing: 6)
-    private let collectionContent: [CollectionSectionsContent] = [
-        .init(title: NSLocalizedString("trackerCreation.emoji", comment: "Emoji"), elements: ["🪴", "🧋", "🦭", "📍", "👀", "🎉",
-                                         "🌭", "🪽", "🐌", "🌵", "⚡️", "❤️",
-                                         "🎲", "✨", "🎈", "💰", "🐞", "⭐️"]),
-        .init(title: NSLocalizedString("trackerCreation.color", comment: "Цвет"), elements: (1...18).compactMap { UIColor(named: "ypColorSelection\($0)") })
+    private lazy var collectionContent: [CollectionSectionsContent] = [
+        .init(title: NSLocalizedString("trackerCreation.emoji", comment: "Emoji"), elements: [
+            "🪴", "🧋", "🦭", "📍", "👀", "🎉",
+            "🌭", "🪽", "🐌", "🌵", "⚡️", "❤️",
+            "🎲", "✨", "🎈", "💰", "🐞", "⭐️"
+        ]),
+        .init(title: NSLocalizedString("trackerCreation.color", comment: "Цвет"), elements: (1...18).compactMap { "ypColorSelection\($0)" })
     ]
     
     private var trackerName: String = ""
@@ -32,6 +34,7 @@ final class TrackerCreationViewController: UIViewController {
     private var selectedEmoji: IndexPath? = nil
     private var selectedColor: IndexPath? = nil
     private var tableOptions: [tableOption] = []
+    private var initialValues: Tracker? = nil
     
     private let weekdaysText = [
         NSLocalizedString("trackerCreation.weekdays.mon", comment: "Пн"),
@@ -43,9 +46,10 @@ final class TrackerCreationViewController: UIViewController {
         NSLocalizedString("trackerCreation.weekdays.sun", comment: "Вс")
     ]
     
-    init(onCreateTracker: @escaping (Tracker, String) -> Void, isRegular: Bool) {
+    init(onCreateTracker: @escaping (Tracker) -> Void, isRegular: Bool, initialValues: Tracker? = nil) {
         self.onCreateTracker = onCreateTracker
         self.isRegular = isRegular
+        self.initialValues = initialValues
         
         self.tableOptions.append(tableOption(title: NSLocalizedString("trackerCreation.category", comment: "Категория"), vc: TrackerTypeSelectionViewController.self))
         if isRegular {
@@ -121,7 +125,7 @@ final class TrackerCreationViewController: UIViewController {
     
     private lazy var createButtonView: UIButton = {
         let button = CustomButton(type: .custom)
-        button.setTitle(NSLocalizedString("trackerCreation.createButton", comment: "Создать"), for: .normal)
+        button.setTitle(NSLocalizedString("trackerCreation.saveButton", comment: "Создать"), for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 16
         button.setBackgroundColor(.ypBlack, for: .normal)
@@ -147,10 +151,27 @@ final class TrackerCreationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = NSLocalizedString("trackerCreation.title", comment: "Новая привычка")
+        
+        self.title = NSLocalizedString(
+            "trackerCreation.title.\(initialValues == nil ? "create" :"edit").\(isRegular ? "regular" : "irregular")",
+            comment: "Title"
+        )
         navigationItem.hidesBackButton = true
         
         view.backgroundColor = .white
+        
+        // заполняем данные
+        if let initialValues {
+            trackerName = initialValues.name
+            category = initialValues.category
+            schedule = initialValues.schedule
+            selectedEmoji = getEmojiIndexPath(initialValues.emoji)
+            selectedColor = getColorIndexPath(initialValues.color)
+            
+            nameTextField.text = trackerName
+            onReturnCategory(category)
+            onUpdateSchedule(schedule)
+        }
         
         // название трекера
         let nameStackView = UIStackView(arrangedSubviews: [nameTextField, longNameWarningLabel])
@@ -193,6 +214,13 @@ final class TrackerCreationViewController: UIViewController {
         ])
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        collectionView(emojiAndColorCollection, didSelectItemAt: selectedEmoji ?? IndexPath(item: 0, section: 0))
+        collectionView(emojiAndColorCollection, didSelectItemAt: selectedColor ?? IndexPath(item: 0, section: 1))
+    }
+    
     private func onUpdateSchedule(_ schedule: [Weekday]) {
         self.schedule = schedule
         if schedule.count == 7 {
@@ -212,18 +240,36 @@ final class TrackerCreationViewController: UIViewController {
         updateCreateButtonState()
     }
     
-    private func onAddNewCategory(_ category: String) {
-        //
+    private func getEmojiIndexPath(_ emoji: String) -> IndexPath {
+        for (index, value) in collectionContent[0].elements.enumerated() {
+            if emoji == value {
+                return IndexPath(row: index, section: 0)
+            }
+        }
+        return IndexPath(row: 0, section: 0)
+    }
+    
+    private func getColorIndexPath(_ color: UIColor) -> IndexPath {
+        let hexColor1 = UIColorMarshalling().hexString(from: color)
+        
+        for (index, value) in collectionContent[1].elements.enumerated() {
+            guard let namedColor = UIColor(named: value) else { continue }
+            let hexColor2 = UIColorMarshalling().hexString(from: namedColor)
+            if hexColor1 == hexColor2 {
+                return IndexPath(row: index, section: 1)
+            }
+        }
+        return IndexPath(row: 0, section: 1)
     }
     
     // блокирует/разблокирует кнопку "Создать"
     private func updateCreateButtonState() {
         createButtonView.isEnabled =
-            !self.trackerName.isEmpty &&
-            !self.category.isEmpty &&
-            (!self.schedule.isEmpty || !isRegular) &&
-            self.selectedColor != nil &&
-            self.selectedEmoji != nil
+        !self.trackerName.isEmpty &&
+        !self.category.isEmpty &&
+        (!self.schedule.isEmpty || !isRegular) &&
+        self.selectedColor != nil &&
+        self.selectedEmoji != nil
     }
     
     @objc private func textFieldDidChange(_ textField: UITextField) {
@@ -247,13 +293,11 @@ final class TrackerCreationViewController: UIViewController {
     }
     
     @objc func createButtonTapped() {
-        guard let trackerEmoji = collectionContent.first(where: { $0.title == NSLocalizedString("trackerCreation.emoji", comment: "Emoji") })?.elements[selectedEmoji?.row ?? 0] as? String,
-              let trackerColor = collectionContent.first(where: { $0.title == NSLocalizedString("trackerCreation.color", comment: "Цвет") })?.elements[selectedColor?.row ?? 0] as? UIColor
-        else { return }
+        let trackerEmoji = collectionContent[0].elements[selectedEmoji?.row ?? 0]
+        let trackerColor = UIColor(named: collectionContent[1].elements[selectedColor?.row ?? 0]) ?? .ypGray
         
         self.onCreateTracker(
-            Tracker(id: "", name: self.trackerName, color: trackerColor, emoji: trackerEmoji, schedule: self.schedule, category: self.category, computedCategory: "", isPinned: false),
-            self.category
+            Tracker(id: initialValues?.id ?? "", name: self.trackerName, color: trackerColor, emoji: trackerEmoji, schedule: self.schedule, category: self.category, computedCategory: "", isPinned: false)
         )
         
         // возвращаемся на экран со списком трекеров
@@ -314,7 +358,7 @@ extension TrackerCreationViewController: UICollectionViewDataSource, UICollectio
     // настройка ячейки
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let section = collectionContent[indexPath.section]
-
+        
         if section.title == NSLocalizedString("trackerCreation.emoji", comment: "Emoji") {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EmojiCollectionCell.identifier, for: indexPath) as? EmojiCollectionCell else {
                 return UICollectionViewCell()
@@ -323,7 +367,7 @@ extension TrackerCreationViewController: UICollectionViewDataSource, UICollectio
             cell.prepareForReuse()
             
             // вписываем эмодзи
-            guard let emoji = section.elements[indexPath.row] as? String else { return cell }
+            let emoji = section.elements[indexPath.row]
             cell.setEmoji(emoji)
             
             return cell
@@ -335,7 +379,7 @@ extension TrackerCreationViewController: UICollectionViewDataSource, UICollectio
             cell.prepareForReuse()
             
             // задаём цвет
-            guard let color = section.elements[indexPath.row] as? UIColor else { return cell }
+            let color = UIColor(named: section.elements[indexPath.row]) ?? .ypGray
             cell.setColor(color)
             
             return cell
@@ -390,7 +434,7 @@ extension TrackerCreationViewController: UICollectionViewDataSource, UICollectio
     // выделение ячейки
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let section = collectionContent[indexPath.section]
-
+        
         if section.title == NSLocalizedString("trackerCreation.emoji", comment: "Emoji") {
             // снимает выделение с предыдущей ячейки (если есть)
             if let selectedEmoji {
@@ -414,7 +458,7 @@ extension TrackerCreationViewController: UICollectionViewDataSource, UICollectio
             cell.didSelect(true)
             self.selectedColor = indexPath
         }
-
+        
         self.updateCreateButtonState()
     }
 }

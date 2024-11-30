@@ -17,7 +17,6 @@ protocol DataProviderProtocol {
     func addRecord(_ record: Tracker) throws
     
     func getTrackers() -> [Tracker]
-    func getPinnedTrackers() -> [Tracker]
     func pinTracker(_ trackerID: String, setTo value: Bool)
     func filterTrackers(date: Date, filter: String)
     
@@ -50,7 +49,7 @@ final class DataProvider: NSObject {
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCoreData> = {
         
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "isPinned", ascending: false)]
         
         let currentwWeekday = getCorrectWeekdayNum(from: Date())
         fetchRequest.predicate = NSPredicate(
@@ -60,7 +59,7 @@ final class DataProvider: NSObject {
         
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                                   managedObjectContext: context,
-                                                                  sectionNameKeyPath: "category",
+                                                                  sectionNameKeyPath: "computedCategory",
                                                                   cacheName: nil)
         fetchedResultsController.delegate = self
         try? fetchedResultsController.performFetch()
@@ -115,16 +114,6 @@ extension DataProvider {
             return result
         } catch {
             print("Failed to get trackers: \(error)")
-            return []
-        }
-    }
-    
-    func getPinnedTrackers() -> [Tracker] {
-        do {
-            let result = try trackerStore.getPinnedTrackers()
-            return result
-        } catch {
-            print("Failed to get pinned trackers: \(error)")
             return []
         }
     }
@@ -201,31 +190,15 @@ extension DataProvider {
 // MARK: - DataProviderProtocol
 extension DataProvider: DataProviderProtocol {
     var numberOfSections: Int {
-        return (fetchedResultsController.sections?.count ?? 0) + 1
+        return fetchedResultsController.sections?.count ?? 0
     }
     
     func numberOfItemsInSection(_ section: Int) -> Int {
-        if section == 0 {
-            // "закрепленные"
-            do {
-                let pinnedTrackers = try trackerStore.getPinnedTrackers()
-                return pinnedTrackers.count
-            } catch {
-                print("Failed to get pinned trackers: \(error)")
-                return 0
-            }
-        } else {
-            return fetchedResultsController.sections?[section - 1].numberOfObjects ?? 0
-        }
+        fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
     
     func object(at indexPath: IndexPath) -> Tracker? {
-//        print("indexPath.section = \(indexPath.section - 1), indexPath.item = \(indexPath.item)")
-//        let all = fetchedResultsController.fetchedObjects!
-//        for tracker in all {
-//            print(fetchedResultsController.indexPath(forObject: tracker))
-//        }
-        let trackerCoreData = fetchedResultsController.object(at: IndexPath(item: indexPath.item, section: indexPath.section - 1))
+        let trackerCoreData = fetchedResultsController.object(at: indexPath)
         return trackerStore.createTracker(from: trackerCoreData)
     }
     

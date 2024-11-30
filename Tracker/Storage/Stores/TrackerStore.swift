@@ -59,6 +59,7 @@ final class TrackerStore {
         let trackerColor = uiColorMarshalling.color(from: trackerColorString)
         let trackerSchedule = ScheduleTransformer().toWeekdays(trackerScheduleString)
         let trackerIsPinned = TrackerCoreData.isPinned
+        let trackerComputedCategory = TrackerCoreData.computedCategory
         
         let tracker = Tracker(
             id: TrackerCoreData.objectID.uriRepresentation().absoluteString,
@@ -67,6 +68,7 @@ final class TrackerStore {
             emoji: trackerEmoji,
             schedule: trackerSchedule,
             category: trackerCategory,
+            computedCategory: trackerComputedCategory,
             isPinned: trackerIsPinned
         )
         return tracker
@@ -87,10 +89,6 @@ final class TrackerStore {
         return trackersArray
     }
     
-    func getPinnedTrackers() throws -> [Tracker] {
-        return try getTrackers(predicate: NSPredicate(format: "isPinned == true"))
-    }
-    
     func getTrackersCD() throws -> [TrackerCoreData] {
         let request = fetchRequest()
         let trackersFromDB = try context.fetch(request)
@@ -103,6 +101,16 @@ final class TrackerStore {
                 item.isPinned = value
                 try context.save()
             }
+        }
+    }
+}
+
+extension TrackerCoreData {
+    @objc dynamic var computedCategory: String {
+        if isPinned {
+            return "Закрепленные"
+        } else {
+            return category?.title ?? "Uncategorized"
         }
     }
 }

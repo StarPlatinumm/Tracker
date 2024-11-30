@@ -177,14 +177,8 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
     
     // настройка ячейки
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        var tracker: Tracker?
-        if indexPath.section == 0 {
-            tracker = dataProvider?.getPinnedTrackers()[indexPath.item]
-        } else {
-            tracker = dataProvider?.object(at: indexPath)
-        }
-        
-        guard let tracker else { return UICollectionViewCell() }
+        guard let tracker = dataProvider?.object(at: indexPath) else { return UICollectionViewCell() }
+
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerCollectionCell.identifier, for: indexPath) as! TrackerCollectionCell
         
         cell.emojiLabel.text = tracker.emoji
@@ -252,22 +246,15 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
         
         let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! SupplementaryView
         // текст заголовка
-        if indexPath.section == 0 {
-            view.titleLabel.text = "Закрепленные"
-        } else {
-            guard let tracker = dataProvider?.object(at: IndexPath(item: 0, section: indexPath.section)) else { return view }
-            view.titleLabel.text = tracker.category
-        }
+        guard let tracker = dataProvider?.object(at: IndexPath(item: 0, section: indexPath.section)) else { return view }
+        view.titleLabel.text = tracker.computedCategory
         view.titleLabel.font = .systemFont(ofSize: 19, weight: .bold)
         return view
     }
     
     // размер хедера
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        if dataProvider?.numberOfItemsInSection(section) == 0 {
-            return CGSize(width: collectionView.frame.width, height: 0)
-        }
-        return CGSize(width: collectionView.frame.width, height: 24)
+        CGSize(width: collectionView.frame.width, height: 24)
     }
 }
 
@@ -325,14 +312,7 @@ extension TrackersViewController: DataProviderDelegate {
 extension TrackersViewController: UICollectionViewDelegate {
     // контекстное меню
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPaths: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        var tracker: Tracker?
-        if indexPaths.section == 0 {
-            tracker = dataProvider?.getPinnedTrackers()[indexPaths.item]
-        } else {
-            tracker = dataProvider?.object(at: indexPaths)
-        }
-        
-        guard let tracker else { return nil }
+        guard let tracker = dataProvider?.object(at: indexPaths) else { return nil }
         let indexPathStr = NSString(string: "\(indexPaths.item), \(indexPaths.section)")
         
         return UIContextMenuConfiguration(identifier: indexPathStr, actionProvider: { actions in

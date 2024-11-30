@@ -18,6 +18,13 @@
 "trackers.emptyTrackers" = "Что будем отслеживать?";
 "trackers.noTrackersFound" = "Ничего не найдено";
 "trackers.filters" = "Фильтры";
+"trackers.contextMenu.pin" = "Закрепить";
+"trackers.contextMenu.unpin" = "Открепить";
+"trackers.contextMenu.edit" = "Редактировать";
+"trackers.contextMenu.remove" = "Удалить";
+"trackers.contextMenu.remove.modal.title" = "Уверены, что хотите удалить трекер?";
+"trackers.contextMenu.remove.modal.ok" = "Удалить";
+"trackers.contextMenu.remove.modal.cance;" = "Отменить";
 
 "trackerTypeSelection.title" = "Создание трекера";
 "trackerTypeSelection.regular" = "Привычка";

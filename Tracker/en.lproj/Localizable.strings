@@ -18,6 +18,13 @@
 "trackers.emptyTrackers" = "What should we track?";
 "trackers.noTrackersFound" = "Nothing is found";
 "trackers.filters" = "Filters";
+"trackers.contextMenu.pin" = "Pin";
+"trackers.contextMenu.unpin" = "Unpin";
+"trackers.contextMenu.edit" = "Edit";
+"trackers.contextMenu.remove" = "Remove";
+"trackers.contextMenu.remove.modal.title" = "Are you sure you want to remove this tracker?";
+"trackers.contextMenu.remove.modal.ok" = "Remove";
+"trackers.contextMenu.remove.modal.cancel" = "Cancel";
 
 "trackerTypeSelection.title" = "Create Tracker";
 "trackerTypeSelection.regular" = "Habit";

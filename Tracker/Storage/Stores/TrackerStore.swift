@@ -103,6 +103,15 @@ final class TrackerStore {
             }
         }
     }
+    
+    func removeTracker(_ trackerID: String) throws {
+        if let objectID = context.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: URL(string: trackerID)!) {
+            if let item = try? context.existingObject(with: objectID) as? TrackerCoreData {
+                context.delete(item)
+                try context.save()
+            }
+        }
+    }
 }
 
 extension TrackerCoreData {

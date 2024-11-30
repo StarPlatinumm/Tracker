@@ -178,7 +178,7 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
     // настройка ячейки
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let tracker = dataProvider?.object(at: indexPath) else { return UICollectionViewCell() }
-
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerCollectionCell.identifier, for: indexPath) as! TrackerCollectionCell
         
         cell.emojiLabel.text = tracker.emoji
@@ -315,16 +315,22 @@ extension TrackersViewController: UICollectionViewDelegate {
         guard let tracker = dataProvider?.object(at: indexPaths) else { return nil }
         let indexPathStr = NSString(string: "\(indexPaths.item), \(indexPaths.section)")
         
+        let pinActionTitle = tracker.isPinned
+        ? NSLocalizedString("trackers.contextMenu.unpin", comment: "Закрепить")
+        : NSLocalizedString("trackers.contextMenu.pin", comment: "Открепить")
+        let editActionTitle = NSLocalizedString("trackers.contextMenu.edit", comment: "Редактировать")
+        let removeActionTitle = NSLocalizedString("trackers.contextMenu.remove", comment: "Удалить")
+        
         return UIContextMenuConfiguration(identifier: indexPathStr, actionProvider: { actions in
             return UIMenu(children: [
-                UIAction(title: tracker.isPinned ? "Открепить" : "Закрепить") { [weak self] _ in
+                UIAction(title: pinActionTitle) { [weak self] _ in
                     self?.togglePinTracker(tracker)
                 },
-                UIAction(title: "Редактировать") { [weak self] _ in
+                UIAction(title: editActionTitle) { [weak self] _ in
                     self?.editTracker(tracker)
                 },
-                UIAction(title: "Удалить") { [weak self] _ in
-                    self?.deleteTracker(tracker)
+                UIAction(title: removeActionTitle, attributes: .destructive) { [weak self] _ in
+                    self?.removeTracker(tracker)
                 },
             ])
         })
@@ -348,7 +354,17 @@ extension TrackersViewController: UICollectionViewDelegate {
     func editTracker(_ tracker: Tracker) {
         print("Редактировать")
     }
-    func deleteTracker(_ tracker: Tracker) {
-        print("Удалить")
+    func removeTracker(_ tracker: Tracker) {
+        let modalTitleText = NSLocalizedString("trackers.contextMenu.remove.modal.title", comment: "Уверены, что хотите удалить трекер?")
+        let modalOkText = NSLocalizedString("trackers.contextMenu.remove.modal.ok", comment: "Удалить")
+        let modalCancelText = NSLocalizedString("trackers.contextMenu.remove.modal.cancel", comment: "Отменить")
+        
+        let alert = UIAlertController(title: modalTitleText, message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: modalOkText, style: .destructive, handler: { [weak self] _ in
+            self?.dataProvider?.removeTracker(tracker.id)
+        }))
+        alert.addAction(UIAlertAction(title: modalCancelText, style: .cancel, handler: { _ in }))
+        
+        self.present(alert, animated: true, completion: nil)
     }
 }

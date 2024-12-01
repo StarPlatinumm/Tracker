@@ -5,6 +5,7 @@
 "onboarding.page2.text" = "Even if it's not liters of water and yoga";
 "onboarding.button.text" = "What a technology!";
 
+"category.title" = "Category";
 "category.newCategoryButton.text" = "Add Category";
 "category.table.placeholer" = "Habits and events can be grouped by meaning";
 
@@ -18,6 +19,10 @@
 "trackers.emptyTrackers" = "What should we track?";
 "trackers.noTrackersFound" = "Nothing is found";
 "trackers.filters" = "Filters";
+"trackers.filters.all" = "All trackers";
+"trackers.filters.today" = "Trackers today";
+"trackers.filters.done" = "Done";
+"trackers.filters.undone" = "Undone";
 "trackers.contextMenu.pin" = "Pin";
 "trackers.contextMenu.unpin" = "Unpin";
 "trackers.contextMenu.edit" = "Edit";

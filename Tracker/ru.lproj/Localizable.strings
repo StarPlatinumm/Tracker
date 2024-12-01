@@ -5,6 +5,7 @@
 "onboarding.page2.text" = "Даже если это не литры воды и йога";
 "onboarding.button.text" = "Вот это технологии!";
 
+"category.title" = "Категория";
 "category.newCategoryButton.text" = "Добавить категорию";
 "category.table.placeholer" = "Привычки и события можно объединить по смыслу";
 
@@ -18,6 +19,10 @@
 "trackers.emptyTrackers" = "Что будем отслеживать?";
 "trackers.noTrackersFound" = "Ничего не найдено";
 "trackers.filters" = "Фильтры";
+"trackers.filters.all" = "Все трекеры";
+"trackers.filters.today" = "Трекеры на сегодня";
+"trackers.filters.done" = "Завершенные";
+"trackers.filters.undone" = "Не завершенные";
 "trackers.contextMenu.pin" = "Закрепить";
 "trackers.contextMenu.unpin" = "Открепить";
 "trackers.contextMenu.edit" = "Редактировать";

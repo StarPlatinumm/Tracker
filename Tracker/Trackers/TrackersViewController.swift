@@ -27,6 +27,7 @@ final class TrackersViewController: UIViewController {
     
     private lazy var scrollView: UIScrollView = {
         let scroll = UIScrollView()
+        scroll.alwaysBounceVertical = true
         scroll.translatesAutoresizingMaskIntoConstraints = false
         return scroll
     }()
@@ -49,8 +50,23 @@ final class TrackersViewController: UIViewController {
         return collection
     }()
     
+    private lazy var filtersButton: UIButton = {
+        let button = UIButton()
+        button.setTitle(NSLocalizedString("trackers.filters", comment: "Фильтры"), for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
+        button.layer.borderWidth = 0
+        button.layer.borderColor = UIColor.ypRed.cgColor
+        button.backgroundColor = .ypBlue
+        button.layer.cornerRadius = 16
+        button.addTarget(self, action: #selector(openFilters), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     private var currentDate = Date()
-    private var filterValue: String = ""
+    private var searchFilterValue: String = ""
+    private var generalFilterValue: GeneralFilter = .all
+    private var doneFilterValue: Bool? = nil
     private let collectionParams = GeometricParams(cellCount: 2, leftInset: 0, rightInset: 0, cellSpacing: 9)
     
     private lazy var dataProvider: DataProviderProtocol? = {
@@ -76,6 +92,7 @@ final class TrackersViewController: UIViewController {
         mainStackView.addArrangedSubview(trackersCollection)
         scrollView.addSubview(mainStackView)
         view.addSubview(scrollView)
+        view.addSubview(filtersButton)
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -90,6 +107,11 @@ final class TrackersViewController: UIViewController {
             mainStackView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
             
             trackersCollection.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor),
+            
+            filtersButton.heightAnchor.constraint(equalToConstant: 50),
+            filtersButton.widthAnchor.constraint(equalToConstant: 114),
+            filtersButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filtersButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
         ])
     }
     
@@ -130,19 +152,54 @@ final class TrackersViewController: UIViewController {
     }
     
     func updateFilters() {
-        dataProvider?.filterTrackers(date: currentDate, filter: filterValue)
+        dataProvider?.filterTrackers(date: currentDate, searchFilter: searchFilterValue, doneFilter: doneFilterValue)
         trackersCollection.reloadData()
+        
+        filtersButton.layer.borderWidth = (generalFilterValue == .all) ? 0 : 2
+    }
+    
+    func onGeneralFilterSelect(_ filter: GeneralFilter) {
+        generalFilterValue = filter
+        switch filter {
+        case .all:
+            doneFilterValue = nil
+        case .today:
+            currentDate = Date()
+            datePicker.date = Date()
+            doneFilterValue = nil
+        case .done:
+            doneFilterValue = true
+        case .undone:
+            doneFilterValue = false
+        }
+        updateFilters()
     }
     
     // обновление текущей даты
     @objc private func dateChanged() {
         currentDate = datePicker.date
+        
+        if currentDate != Date() && generalFilterValue == .today {
+            generalFilterValue = .all
+        }
         updateFilters()
     }
     
     // добавление нового трекера
     @objc private func addTapped() {
-        present(UINavigationController(rootViewController: TrackerTypeSelectionViewController(onAddTracker: addTracker)), animated: true, completion: nil)
+        present(UINavigationController(rootViewController: TrackerTypeSelectionViewController(onAddTracker: addTracker)), animated: true)
+    }
+    
+    // выбор фильтра
+    @objc private func openFilters() {
+        present(
+            UINavigationController(
+                rootViewController: GeneralFiltersViewController(
+                    selectedFilter: generalFilterValue,
+                    onFilterSelect: onGeneralFilterSelect
+                )),
+            animated: true
+        )
     }
 }
 
@@ -167,8 +224,10 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
                     text: NSLocalizedString("trackers.noTrackersFound", comment: "Ничего не найдено")
                 )
             }
+            filtersButton.isHidden = true
         } else {
             trackersCollection.backgroundView = nil
+            filtersButton.isHidden = false
         }
         
         return sectionsCount
@@ -266,12 +325,12 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
 // для управления SearchBar'ом
 extension TrackersViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        filterValue = searchText
+        searchFilterValue = searchText
         updateFilters()
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        filterValue = ""
+        searchFilterValue = ""
         updateFilters()
     }
 }

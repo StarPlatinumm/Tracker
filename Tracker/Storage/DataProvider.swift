@@ -20,7 +20,7 @@ protocol DataProviderProtocol {
     func pinTracker(_ trackerID: String, setTo value: Bool)
     func editTracker(_ tracker: Tracker)
     func removeTracker(_ trackerID: String)
-    func filterTrackers(date: Date, filter: String)
+    func filterTrackers(date: Date, searchFilter: String, doneFilter: Bool?)
     
     func addCategory(categoryTitle: String)
     func getCategoryNames() -> [String]
@@ -90,15 +90,24 @@ final class DataProvider: NSObject {
         return String((Calendar.current.component(.weekday, from: date) + 5) % 7)
     }
     
-    func filterTrackers(date: Date, filter: String) {
+    func filterTrackers(date: Date, searchFilter: String, doneFilter: Bool?) {
         let weekday = getCorrectWeekdayNum(from: date)
         
-        let newPredicate = NSPredicate(
-            format: "name LIKE[c] %@ AND (schedule LIKE %@ OR ANY record.date = %@ OR (record.@count == 0 AND schedule == ''))",
-            argumentArray: ["*\(filter)*", "*\(weekday)*", Calendar.current.startOfDay(for: date)]
-        )
+        var formatString = "name LIKE[c] %@ AND (schedule LIKE %@ OR ANY record.date = %@ OR (record.@count == 0 AND schedule == ''))"
+        var arguments: [Any] = ["*\(searchFilter)*", "*\(weekday)*", Calendar.current.startOfDay(for: date)]
         
-        fetchedResultsController.fetchRequest.predicate = newPredicate
+        if let doneFilter {
+            if doneFilter {
+                formatString += " AND SUBQUERY(record, $r, $r.date == %@).@count > 0"
+            } else {
+                formatString += " AND SUBQUERY(record, $r, $r.date == %@).@count == 0"
+            }
+            arguments.append(Calendar.current.startOfDay(for: date))
+        }
+        
+        print("formatString: \(formatString)")
+        
+        fetchedResultsController.fetchRequest.predicate = NSPredicate(format: formatString, argumentArray: arguments)
         
         do {
             try fetchedResultsController.performFetch()

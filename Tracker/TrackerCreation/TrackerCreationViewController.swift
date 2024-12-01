@@ -170,7 +170,7 @@ final class TrackerCreationViewController: UIViewController {
         )
         navigationItem.hidesBackButton = true
         
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         
         // заполняем данные
         if let initialValues {

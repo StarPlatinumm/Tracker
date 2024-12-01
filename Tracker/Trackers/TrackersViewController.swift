@@ -28,6 +28,7 @@ final class TrackersViewController: UIViewController {
     private lazy var scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.alwaysBounceVertical = true
+        scroll.backgroundColor = .clear
         scroll.translatesAutoresizingMaskIntoConstraints = false
         return scroll
     }()
@@ -36,6 +37,7 @@ final class TrackersViewController: UIViewController {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = 24
+        stackView.backgroundColor = .clear
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -47,6 +49,7 @@ final class TrackersViewController: UIViewController {
         collection.translatesAutoresizingMaskIntoConstraints = false
         collection.dataSource = self
         collection.delegate = self
+        collection.backgroundColor = .clear
         return collection
     }()
     

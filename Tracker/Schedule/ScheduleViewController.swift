@@ -67,7 +67,7 @@ final class ScheduleViewController: UIViewController {
         self.title = NSLocalizedString("schedule.title", comment: NSLocalizedString("", comment: "Расписание"))
         navigationItem.hidesBackButton = true
         
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         
         // выбор категории и расписания
         mainStackView.addArrangedSubview(tableView)

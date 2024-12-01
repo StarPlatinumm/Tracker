@@ -47,6 +47,7 @@ final class TrackerTypeSelectionViewController: UIViewController {
     private func getButton(_ title: String) -> UIButton {
         let button = UIButton()
         button.setTitle(title, for: .normal)
+        button.titleLabel?.textColor = .ypWhite
         button.backgroundColor = .ypBlack
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false

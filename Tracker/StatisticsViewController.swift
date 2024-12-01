@@ -88,10 +88,9 @@ final class StatisticsViewController: UIViewController {
         navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        let trackersCount = dataProvider?.getTrackers().count ?? 0
+        doneCount = dataProvider?.getAllTrackersRecordsCount() ?? 0
         
-        if trackersCount > 0 {
-            doneCount = dataProvider?.getAllTrackersRecordsCount() ?? 0
+        if doneCount > 0 {
             view.addSubview(cardView)
             
             NSLayoutConstraint.activate([

@@ -58,7 +58,7 @@ final class NewCategoryViewController: UIViewController {
         
         self.title = NSLocalizedString("newCategory.title", comment: "Новая категория")
         navigationItem.hidesBackButton = true
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         
         view.addSubview(nameTextField)
         view.addSubview(longNameWarningLabel)

@@ -68,7 +68,7 @@ final class CategoryViewController: UIViewController {
         
         self.title = NSLocalizedString("category.title", comment: "Добавить категорию")
         navigationItem.hidesBackButton = true
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         
         vm.getCategories()
         

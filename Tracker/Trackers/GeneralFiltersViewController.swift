@@ -28,9 +28,9 @@ final class GeneralFiltersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Категория"
+        self.title = NSLocalizedString("trackers.filters", comment: "Фильтры")
         navigationItem.hidesBackButton = true
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         
         view.addSubview(tableView)
         
@@ -49,11 +49,11 @@ extension GeneralFiltersViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! GeneralFiltersTableCell
-        cell.textLabel?.text = GeneralFilter.allCases[indexPath.row].rawValue
+        cell.textLabel?.text = GeneralFilter.allCases[indexPath.row].localized
         
         let accessoryView = UILabel(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
         accessoryView.font = .systemFont(ofSize: 20, weight: .medium)
-        accessoryView.text = GeneralFilter.allCases[indexPath.row].rawValue == selectedFilter.rawValue ? "✓" : ""
+        accessoryView.text = GeneralFilter.allCases[indexPath.row].localized == selectedFilter.localized ? "✓" : ""
         accessoryView.textColor = .ypBlue
         cell.accessoryView = accessoryView
         

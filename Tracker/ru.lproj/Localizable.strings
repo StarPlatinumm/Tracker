@@ -67,3 +67,7 @@
 "schedule.weekdays.sun" = "Воскресенье";
 "schedule.title" = "Расписание";
 "schedule.doneButton" = "Готово";
+
+"statistics.title" = "Статистика";
+"statistics.empty" = "Анализировать пока нечего";
+"statistics.doneCount" = "Трекеров завершено";

@@ -61,6 +61,13 @@ final class TrackerRecordStore {
         return trackerRecords
     }
     
+    func getAllTrackersRecordsCount() throws -> Int {
+        let fetchRequest = fetchRequest()
+        let trackerRecordsCoreData = try context.fetch(fetchRequest)
+        
+        return trackerRecordsCoreData.count
+    }
+    
     func isTrackerCompleted(trackerID: String, date: Date) throws -> Bool  {
         let fetchRequest = fetchRequest()
         let startOfDay = Calendar.current.startOfDay(for: date)

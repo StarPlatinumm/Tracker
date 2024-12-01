@@ -29,6 +29,7 @@ protocol DataProviderProtocol {
     func removeTrackerRecord(trackerID: String, date: Date)
     func isTrackerCompleted(trackerID: String, date: Date) -> Bool
     func getTrackerRecords(by trackerID: String) -> [TrackerRecord]
+    func getAllTrackersRecordsCount() -> Int
 }
 
 // MARK: - DataProvider
@@ -189,6 +190,16 @@ extension DataProvider {
         } catch {
             print("Failed to get Tracker's records: \(error)")
             return []
+        }
+    }
+    
+    func getAllTrackersRecordsCount() -> Int {
+        do {
+            let result = try trackerRecordStore.getAllTrackersRecordsCount()
+            return result
+        } catch {
+            print("Failed to get trackers: \(error)")
+            return 0
         }
     }
 }

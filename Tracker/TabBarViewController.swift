@@ -15,7 +15,7 @@ final class TabBarViewController: UITabBarController {
         )
         
         // вкладка Статистика
-        let statisticsViewController = UIViewController()
+        let statisticsViewController = UINavigationController(rootViewController: StatisticsViewController())
         statisticsViewController.tabBarItem = UITabBarItem(
             title: NSLocalizedString("tabBar.statistics.title", comment: "Статистика"),
             image: UIImage(named: "statistics-tab-bar-icon"),

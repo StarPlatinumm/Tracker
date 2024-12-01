@@ -67,3 +67,7 @@
 "schedule.weekdays.sun" = "Sunday";
 "schedule.title" = "Schedule";
 "schedule.doneButton" = "Done";
+
+"statistics.title" = "Statistics";
+"statistics.empty" = "Nothing to analyze yet";
+"statistics.doneCount" = "Trackers done";

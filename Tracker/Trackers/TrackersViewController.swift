@@ -68,6 +68,7 @@ final class TrackersViewController: UIViewController {
     private var generalFilterValue: GeneralFilter = .all
     private var doneFilterValue: Bool? = nil
     private let collectionParams = GeometricParams(cellCount: 2, leftInset: 0, rightInset: 0, cellSpacing: 9)
+    private let analyticsService = AnalyticsService()
     
     private lazy var dataProvider: DataProviderProtocol? = {
         do {
@@ -113,6 +114,16 @@ final class TrackersViewController: UIViewController {
             filtersButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             filtersButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
         ])
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        analyticsService.report(event: "open", params: ["screen" : "Main"])
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        analyticsService.report(event: "close", params: ["screen" : "Main"])
     }
     
     // проверяет, отмечен ли трекер как выполненный в текущую дату
@@ -187,11 +198,13 @@ final class TrackersViewController: UIViewController {
     
     // добавление нового трекера
     @objc private func addTapped() {
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "add_track"])
         present(UINavigationController(rootViewController: TrackerTypeSelectionViewController(onAddTracker: addTracker)), animated: true)
     }
     
     // выбор фильтра
     @objc private func openFilters() {
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "filter"])
         present(
             UINavigationController(
                 rootViewController: GeneralFiltersViewController(
@@ -252,6 +265,8 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
         cell.cardView.backgroundColor = tracker.color
         cell.onUpdateTrackersDoneStatus = {[weak self] in
             guard let self else { return }
+            
+            self.analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "track"])
             
             if isTrackerCompleteOnCurrentDate(tracker.id) {
                 self.dataProvider?.removeTrackerRecord(trackerID: tracker.id, date: self.currentDate)
@@ -416,6 +431,8 @@ extension TrackersViewController: UICollectionViewDelegate {
         dataProvider?.pinTracker(tracker.id, setTo: !tracker.isPinned)
     }
     func editTrackerAction(_ tracker: Tracker) {
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "edit"])
+        
         present(UINavigationController(rootViewController: TrackerCreationViewController(
             onCreateTracker: self.editTracker,
             isRegular: !tracker.schedule.isEmpty,
@@ -424,6 +441,8 @@ extension TrackersViewController: UICollectionViewDelegate {
         )), animated: true)
     }
     func removeTrackerAction(_ tracker: Tracker) {
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "delete"])
+        
         let modalTitleText = NSLocalizedString("trackers.contextMenu.remove.modal.title", comment: "Уверены, что хотите удалить трекер?")
         let modalOkText = NSLocalizedString("trackers.contextMenu.remove.modal.ok", comment: "Удалить")
         let modalCancelText = NSLocalizedString("trackers.contextMenu.remove.modal.cancel", comment: "Отменить")

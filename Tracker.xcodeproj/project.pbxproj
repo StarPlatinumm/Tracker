@@ -22,6 +22,7 @@
 		6F5BE47F2CFC7AE7002814B0 /* GeneralFilterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5BE47E2CFC7AE7002814B0 /* GeneralFilterModel.swift */; };
 		6F5BE4812CFC7E17002814B0 /* GeneralFiltersTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5BE4802CFC7E17002814B0 /* GeneralFiltersTableCell.swift */; };
 		6F5BE4832CFC962F002814B0 /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5BE4822CFC962F002814B0 /* StatisticsViewController.swift */; };
+		6F5BE4852CFCC12A002814B0 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5BE4842CFCC12A002814B0 /* AnalyticsService.swift */; };
 		6F851E772CCC000000892F6E /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F851E762CCC000000892F6E /* TrackerStore.swift */; };
 		6F851E792CCC001700892F6E /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F851E782CCC001700892F6E /* TrackerRecordStore.swift */; };
 		6F851E7B2CCC002200892F6E /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F851E7A2CCC002200892F6E /* TrackerCategoryStore.swift */; };
@@ -66,6 +67,7 @@
 		6F5BE47E2CFC7AE7002814B0 /* GeneralFilterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralFilterModel.swift; sourceTree = "<group>"; };
 		6F5BE4802CFC7E17002814B0 /* GeneralFiltersTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralFiltersTableCell.swift; sourceTree = "<group>"; };
 		6F5BE4822CFC962F002814B0 /* StatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
+		6F5BE4842CFCC12A002814B0 /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		6F851E762CCC000000892F6E /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
 		6F851E782CCC001700892F6E /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
 		6F851E7A2CCC002200892F6E /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
@@ -223,6 +225,7 @@
 				6FD0BFD32C566149007086E7 /* TabBarViewController.swift */,
 				6FC167D02CEA0C61003FBE46 /* OnboardingViewController.swift */,
 				6F5BE4822CFC962F002814B0 /* StatisticsViewController.swift */,
+				6F5BE4842CFCC12A002814B0 /* AnalyticsService.swift */,
 				6FB076C52CC5690B0059D77F /* Trackers */,
 				6FB076C62CC56A7E0059D77F /* TrackerTypeSelection */,
 				6FDD6F692CB2E0260057E8F4 /* TrackerCreation */,
@@ -266,7 +269,6 @@
 				B7396B38C51DCA8C72AF29F9 /* Pods-Tracker.debug.xcconfig */,
 				AE8B2DAD9DBD5C89CE82B3F3 /* Pods-Tracker.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -413,6 +415,7 @@
 				6FC167D32CEA2D6B003FBE46 /* CategoryViewController.swift in Sources */,
 				6F5BE4812CFC7E17002814B0 /* GeneralFiltersTableCell.swift in Sources */,
 				6F851E7B2CCC002200892F6E /* TrackerCategoryStore.swift in Sources */,
+				6F5BE4852CFCC12A002814B0 /* AnalyticsService.swift in Sources */,
 				6F5BE4732CEE404A002814B0 /* UserSettings.swift in Sources */,
 				6FFE3C422CCE5A9000454A18 /* DataProvider.swift in Sources */,
 				6F52C10C2CB95A7100BC93BE /* ScheduleViewController.swift in Sources */,
@@ -588,6 +591,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 89299A2A8Z;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Tracker/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
@@ -622,6 +626,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 89299A2A8Z;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Tracker/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";

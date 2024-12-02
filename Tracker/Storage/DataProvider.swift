@@ -258,8 +258,7 @@ extension DataProvider: NSFetchedResultsControllerDelegate {
         delegate?.didUpdate(TrackerStoreUpdate(
             insertedIndexes: insertedIndexes,
             deletedIndexes: deletedIndexes
-        )
-        )
+        ))
         self.insertedIndexes = nil
         self.deletedIndexes = nil
     }

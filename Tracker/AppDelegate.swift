@@ -15,6 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         window?.makeKeyAndVisible()
         
+        AnalyticsService.activate()
+        
         return true
     }
 }

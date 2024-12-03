@@ -53,7 +53,7 @@ final class CategoryViewController: UIViewController {
     
     private lazy var newCategoryButtonView: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("Добавить категорию", for: .normal)
+        button.setTitle(NSLocalizedString("category.newCategoryButton.text", comment: "Добавить категорию"), for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 16
         button.backgroundColor = .ypBlack
@@ -66,9 +66,9 @@ final class CategoryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Категория"
+        self.title = NSLocalizedString("category.title", comment: "Добавить категорию")
         navigationItem.hidesBackButton = true
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         
         vm.getCategories()
         
@@ -110,7 +110,7 @@ final class CategoryViewController: UIViewController {
 extension CategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (vm.categories.count == 0) {
-            setBGViewToTable(imageName: "trackers-placeholder", text: "Привычки и события можно объединить по смыслу")
+            setBGViewToTable(imageName: "trackers-placeholder", text: NSLocalizedString("category.table.placeholer", comment: "Привычки и события можно объединить по смыслу"))
         } else {
             tableView.backgroundView = nil
         }

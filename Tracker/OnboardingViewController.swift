@@ -4,7 +4,7 @@ final class OnboardingViewController: UIPageViewController {
     
     lazy private var continueButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Вот это технологии!", for: .normal)
+        button.setTitle(NSLocalizedString("onboarding.button.text", comment: "Вот это технологии!"), for: .normal)
         button.backgroundColor = .ypBlack
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -48,8 +48,12 @@ final class OnboardingViewController: UIPageViewController {
     
     lazy private var pages: [UIViewController] = {
         return [
-            getPage(backgroundImageName: "onboarding_page_1", labelText: "Отслеживайте только то, что хотите"),
-            getPage(backgroundImageName: "onboarding_page_2", labelText: "Даже если это не литры воды и йога")
+            getPage(
+                backgroundImageName: "onboarding_page_1",
+                labelText: NSLocalizedString("onboarding.page1.text", comment: "Отслеживайте только то, что хотите")),
+            getPage(
+                backgroundImageName: "onboarding_page_2",
+                labelText: NSLocalizedString("onboarding.page2.text", comment: "Даже если это не литры воды и йога")),
         ]
     }()
     

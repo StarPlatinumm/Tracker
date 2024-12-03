@@ -1,0 +1,73 @@
+"tabBar.trackers.title" = "Trackers";
+"tabBar.statistics.title" = "Statistics";
+
+"onboarding.page1.text" = "Track only what you want";
+"onboarding.page2.text" = "Even if it's not liters of water and yoga";
+"onboarding.button.text" = "What a technology!";
+
+"category.title" = "Category";
+"category.newCategoryButton.text" = "Add Category";
+"category.table.placeholer" = "Habits and events can be grouped by meaning";
+
+"newCategory.nameTextField.placeholder" = "Enter category name";
+"newCategory.nameTextField.maxLen" = "Limit is 24 characters";
+"newCategory.doneButton.text" = "Done";
+"newCategory.title" = "New Category";
+
+"trackers.title" = "Trackers";
+"trackers.searchBar.placeholder" = "Search";
+"trackers.emptyTrackers" = "What should we track?";
+"trackers.noTrackersFound" = "Nothing is found";
+"trackers.filters" = "Filters";
+"trackers.filters.all" = "All trackers";
+"trackers.filters.today" = "Trackers today";
+"trackers.filters.done" = "Done";
+"trackers.filters.undone" = "Undone";
+"trackers.contextMenu.pin" = "Pin";
+"trackers.contextMenu.unpin" = "Unpin";
+"trackers.contextMenu.edit" = "Edit";
+"trackers.contextMenu.remove" = "Remove";
+"trackers.contextMenu.remove.modal.title" = "Are you sure you want to remove this tracker?";
+"trackers.contextMenu.remove.modal.ok" = "Remove";
+"trackers.contextMenu.remove.modal.cancel" = "Cancel";
+"trackers.category.pinned" = "Pinned";
+
+"trackerTypeSelection.title" = "Create Tracker";
+"trackerTypeSelection.regular" = "Habit";
+"trackerTypeSelection.irregular" = "Irregular Event";
+
+"trackerCreation.weekdays.mon" = "Mon";
+"trackerCreation.weekdays.tue" = "Tue";
+"trackerCreation.weekdays.wed" = "Wed";
+"trackerCreation.weekdays.thu" = "Thu";
+"trackerCreation.weekdays.fri" = "Fri";
+"trackerCreation.weekdays.sat" = "Sat";
+"trackerCreation.weekdays.sun" = "Sun";
+"trackerCreation.emoji" = "Emoji";
+"trackerCreation.color" = "Color";
+"trackerCreation.category" = "Category";
+"trackerCreation.schedule" = "Schedule";
+"trackerCreation.schedule.everyDay" = "Every day";
+"trackerCreation.nameTextField.placeholder" = "Enter tracker name";
+"trackerCreation.nameTextField.maxLen" = "Limit is 38 characters";
+"trackerCreation.createButton" = "Create";
+"trackerCreation.saveButton" = "Save";
+"trackerCreation.cancelButton" = "Cancel";
+"trackerCreation.title.create.regular" = "New habit";
+"trackerCreation.title.create.irregular" = "New event";
+"trackerCreation.title.edit.regular" = "Edit habit";
+"trackerCreation.title.edit.irregular" = "Edit event";
+
+"schedule.weekdays.mon" = "Monday";
+"schedule.weekdays.tue" = "Tuesday";
+"schedule.weekdays.wed" = "Wednesday";
+"schedule.weekdays.thu" = "Thursday";
+"schedule.weekdays.fri" = "Friday";
+"schedule.weekdays.sat" = "Saturday";
+"schedule.weekdays.sun" = "Sunday";
+"schedule.title" = "Schedule";
+"schedule.doneButton" = "Done";
+
+"statistics.title" = "Statistics";
+"statistics.empty" = "Nothing to analyze yet";
+"statistics.doneCount" = "Trackers done";

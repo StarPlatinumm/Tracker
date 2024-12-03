@@ -17,7 +17,10 @@ protocol DataProviderProtocol {
     func addRecord(_ record: Tracker) throws
     
     func getTrackers() -> [Tracker]
-    func filterTrackers(date: Date, filter: String)
+    func pinTracker(_ trackerID: String, setTo value: Bool)
+    func editTracker(_ tracker: Tracker)
+    func removeTracker(_ trackerID: String)
+    func filterTrackers(date: Date, searchFilter: String, doneFilter: Bool?)
     
     func addCategory(categoryTitle: String)
     func getCategoryNames() -> [String]
@@ -26,11 +29,12 @@ protocol DataProviderProtocol {
     func removeTrackerRecord(trackerID: String, date: Date)
     func isTrackerCompleted(trackerID: String, date: Date) -> Bool
     func getTrackerRecords(by trackerID: String) -> [TrackerRecord]
+    func getAllTrackersRecordsCount() -> Int
 }
 
 // MARK: - DataProvider
 final class DataProvider: NSObject {
-
+    
     enum DataProviderError: Error {
         case failedToInitializeContext
     }
@@ -46,9 +50,9 @@ final class DataProvider: NSObject {
     
     // контроллер для обновления коллекции трекеров
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCoreData> = {
-
+        
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "isPinned", ascending: false)]
         
         let currentwWeekday = getCorrectWeekdayNum(from: Date())
         fetchRequest.predicate = NSPredicate(
@@ -58,7 +62,7 @@ final class DataProvider: NSObject {
         
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                                   managedObjectContext: context,
-                                                                  sectionNameKeyPath: "category",
+                                                                  sectionNameKeyPath: "computedCategory",
                                                                   cacheName: nil)
         fetchedResultsController.delegate = self
         try? fetchedResultsController.performFetch()
@@ -87,16 +91,25 @@ final class DataProvider: NSObject {
         return String((Calendar.current.component(.weekday, from: date) + 5) % 7)
     }
     
-    func filterTrackers(date: Date, filter: String) {
+    func filterTrackers(date: Date, searchFilter: String, doneFilter: Bool?) {
         let weekday = getCorrectWeekdayNum(from: date)
         
-        let newPredicate = NSPredicate(
-            format: "name LIKE[c] %@ AND (schedule LIKE %@ OR ANY record.date = %@ OR (record.@count == 0 AND schedule == ''))",
-            argumentArray: ["*\(filter)*", "*\(weekday)*", Calendar.current.startOfDay(for: date)]
-        )
-
-        fetchedResultsController.fetchRequest.predicate = newPredicate
-
+        var formatString = "name LIKE[c] %@ AND (schedule LIKE %@ OR ANY record.date = %@ OR (record.@count == 0 AND schedule == ''))"
+        var arguments: [Any] = ["*\(searchFilter)*", "*\(weekday)*", Calendar.current.startOfDay(for: date)]
+        
+        if let doneFilter {
+            if doneFilter {
+                formatString += " AND SUBQUERY(record, $r, $r.date == %@).@count > 0"
+            } else {
+                formatString += " AND SUBQUERY(record, $r, $r.date == %@).@count == 0"
+            }
+            arguments.append(Calendar.current.startOfDay(for: date))
+        }
+        
+        print("formatString: \(formatString)")
+        
+        fetchedResultsController.fetchRequest.predicate = NSPredicate(format: formatString, argumentArray: arguments)
+        
         do {
             try fetchedResultsController.performFetch()
         } catch {
@@ -112,8 +125,32 @@ extension DataProvider {
             let result = try trackerStore.getTrackers()
             return result
         } catch {
-            print("Failed to get Trackers: \(error)")
+            print("Failed to get trackers: \(error)")
             return []
+        }
+    }
+    
+    func pinTracker(_ trackerID: String, setTo value: Bool) {
+        do {
+            try trackerStore.pinTracker(trackerID, value: value)
+        } catch {
+            print("Failed to pin tracker: \(error)")
+        }
+    }
+    
+    func editTracker(_ tracker: Tracker) {
+        do {
+            try trackerStore.editTracker(tracker)
+        } catch {
+            print("Failed to edit tracker: \(error)")
+        }
+    }
+    
+    func removeTracker(_ trackerID: String) {
+        do {
+            try trackerStore.removeTracker(trackerID)
+        } catch {
+            print("Failed to remove tracker: \(error)")
         }
     }
 }
@@ -155,6 +192,16 @@ extension DataProvider {
             return []
         }
     }
+    
+    func getAllTrackersRecordsCount() -> Int {
+        do {
+            let result = try trackerRecordStore.getAllTrackersRecordsCount()
+            return result
+        } catch {
+            print("Failed to get trackers: \(error)")
+            return 0
+        }
+    }
 }
 
 // для работы с TrackerCategory
@@ -181,7 +228,7 @@ extension DataProvider {
 // MARK: - DataProviderProtocol
 extension DataProvider: DataProviderProtocol {
     var numberOfSections: Int {
-        fetchedResultsController.sections?.count ?? 0
+        return fetchedResultsController.sections?.count ?? 0
     }
     
     func numberOfItemsInSection(_ section: Int) -> Int {
@@ -192,7 +239,7 @@ extension DataProvider: DataProviderProtocol {
         let trackerCoreData = fetchedResultsController.object(at: indexPath)
         return trackerStore.createTracker(from: trackerCoreData)
     }
-
+    
     func addRecord(_ record: Tracker) throws {
         trackerStore.addNewTracker(tracker: record)
     }
@@ -204,15 +251,14 @@ extension DataProvider: NSFetchedResultsControllerDelegate {
         insertedIndexes = IndexSet()
         deletedIndexes = IndexSet()
     }
-
+    
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         guard let insertedIndexes, let deletedIndexes else { return }
         
         delegate?.didUpdate(TrackerStoreUpdate(
-                insertedIndexes: insertedIndexes,
-                deletedIndexes: deletedIndexes
-            )
-        )
+            insertedIndexes: insertedIndexes,
+            deletedIndexes: deletedIndexes
+        ))
         self.insertedIndexes = nil
         self.deletedIndexes = nil
     }

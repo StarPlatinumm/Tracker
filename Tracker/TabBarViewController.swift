@@ -9,15 +9,15 @@ final class TabBarViewController: UITabBarController {
         // вкладка Трекеры
         let trackerViewController = UINavigationController(rootViewController: TrackersViewController())
         trackerViewController.tabBarItem = UITabBarItem(
-            title: "Трекеры",
+            title: NSLocalizedString("tabBar.trackers.title", comment: "Трекеры"),
             image: UIImage(named: "trackers-tab-bar-icon"),
             selectedImage: nil
         )
         
         // вкладка Статистика
-        let statisticsViewController = UIViewController()
+        let statisticsViewController = UINavigationController(rootViewController: StatisticsViewController())
         statisticsViewController.tabBarItem = UITabBarItem(
-            title: "Статистика",
+            title: NSLocalizedString("tabBar.statistics.title", comment: "Статистика"),
             image: UIImage(named: "statistics-tab-bar-icon"),
             selectedImage: nil
         )

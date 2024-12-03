@@ -3,9 +3,9 @@ import UIKit
 // экран выбора создания привычки или нерегулярного события
 final class TrackerTypeSelectionViewController: UIViewController {
     
-    private let onAddTracker: (Tracker, String) -> Void
+    private let onAddTracker: (Tracker) -> Void
     
-    init(onAddTracker: @escaping (Tracker, String) -> Void) {
+    init(onAddTracker: @escaping (Tracker) -> Void) {
         self.onAddTracker = onAddTracker
         super.init(nibName: nil, bundle: nil)
     }
@@ -19,12 +19,12 @@ final class TrackerTypeSelectionViewController: UIViewController {
         
         view.backgroundColor = .ypWhite
         
-        self.title = "Создание трекера"
+        self.title = NSLocalizedString("trackerTypeSelection.title", comment: "Создание трекера")
         
-        let regularEventButton = getButton("Привычка")
-        regularEventButton.addTarget(self, action: #selector(opencCreateTrackerWithSchedule), for: .touchUpInside)
-        let irregularEventButton = getButton("Нерегулярное событие")
-        irregularEventButton.addTarget(self, action: #selector(opencCreateTrackerWOSchedule), for: .touchUpInside)
+        let regularEventButton = getButton(NSLocalizedString("trackerTypeSelection.regular", comment: "Привычка"))
+        regularEventButton.addTarget(self, action: #selector(openCreateTrackerWithSchedule), for: .touchUpInside)
+        let irregularEventButton = getButton(NSLocalizedString("trackerTypeSelection.irregular", comment: "Нерегулярное событие"))
+        irregularEventButton.addTarget(self, action: #selector(openCreateTrackerWOSchedule), for: .touchUpInside)
         
         view.addSubview(regularEventButton)
         view.addSubview(irregularEventButton)
@@ -47,17 +47,18 @@ final class TrackerTypeSelectionViewController: UIViewController {
     private func getButton(_ title: String) -> UIButton {
         let button = UIButton()
         button.setTitle(title, for: .normal)
+        button.titleLabel?.textColor = .ypWhite
         button.backgroundColor = .ypBlack
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }
     
-    @objc private func opencCreateTrackerWithSchedule() {
+    @objc private func openCreateTrackerWithSchedule() {
         navigationController?.pushViewController(TrackerCreationViewController(onCreateTracker: self.onAddTracker, isRegular: true), animated: true)
     }
     
-    @objc private func opencCreateTrackerWOSchedule() {
+    @objc private func openCreateTrackerWOSchedule() {
         navigationController?.pushViewController(TrackerCreationViewController(onCreateTracker: self.onAddTracker, isRegular: false), animated: true)
     }
 }

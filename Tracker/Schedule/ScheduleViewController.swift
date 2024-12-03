@@ -5,7 +5,15 @@ final class ScheduleViewController: UIViewController {
     private var schedule: [Weekday]
     private let updateSchedule: ([Weekday]) -> Void
     private let tableOptions: [Weekday] = [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
-    private let weekdaysText = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
+    private let weekdaysText = [
+        NSLocalizedString("schedule.weekdays.mon", comment: "Понедельник"),
+        NSLocalizedString("schedule.weekdays.tue", comment: "Вторник"),
+        NSLocalizedString("schedule.weekdays.wed", comment: "Среда"),
+        NSLocalizedString("schedule.weekdays.thu", comment: "Четверг"),
+        NSLocalizedString("schedule.weekdays.fri", comment: "Пятница"),
+        NSLocalizedString("schedule.weekdays.sat", comment: "Суббота"),
+        NSLocalizedString("schedule.weekdays.sun", comment: "Воскресенье")
+    ]
     
     required init?(coder aDecoder: NSCoder) {
         fatalError()
@@ -43,7 +51,7 @@ final class ScheduleViewController: UIViewController {
     
     private lazy var doneButtonView: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(NSLocalizedString("schedule.doneButton", comment: "Готово"), for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 16
         button.backgroundColor = .ypBlack
@@ -56,10 +64,10 @@ final class ScheduleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Расписание"
+        self.title = NSLocalizedString("schedule.title", comment: NSLocalizedString("", comment: "Расписание"))
         navigationItem.hidesBackButton = true
         
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         
         // выбор категории и расписания
         mainStackView.addArrangedSubview(tableView)
